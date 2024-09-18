@@ -7,13 +7,10 @@
   Copyright (c) 2024 yuesong-feng 冯岳松
 
   Version 1.0 2024/09/05
-
-  Version 1.1 2024/09/10 change timedwait from abstime to microseconds
 */
 #ifndef COND_H
 #define COND_H
 #include "mutex.h"    // for mutex_t, halt_if, ETIMEDOUT
-#include <sys/time.h> // for gettimeofday
 
 typedef struct cond_t {
   pthread_cond_t cond;

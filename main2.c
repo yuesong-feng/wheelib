@@ -1,6 +1,7 @@
+#include "event.h"
+#include "sem.h"
 #include "stack.h"
 #include "stdio.h"
-#include "event.h"
 
 int main() {
   stack_t *stk = stack_create();
@@ -24,13 +25,19 @@ int main() {
 
   printf("%s\n", buf2);
 
+  int ret;
   event_t evt;
-
   event_init(&evt);
-
-  event_timedwait(&evt, 3000000000);
-
+  ret = event_timedwait(&evt, 3000000);
+  printf("ret = %d\n", ret);
   event_destroy(&evt);
+
+  semaphore_t sem;
+  event_init(&evt);
+  semaphore_init(&sem, 1);
+  ret = semaphore_p_timedwait(&sem, 3000000);
+  printf("ret = %d\n", ret);
+  semaphore_destroy(&sem);
 
   return 0;
 }

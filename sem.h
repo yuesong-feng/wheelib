@@ -11,9 +11,12 @@
   Version 1.0 2024/09/05
 
   Version 1.1 2024/09/10 change timedwait from abstime to microseconds
+
+  Version 1.2 2024/09/18 add calc_abstime
 */
 #ifndef SEM_H
 #define SEM_H
+#include "calc.h" // for calc_abstime
 #include "cond.h" // for cond, mutex
 
 typedef struct semaphore_t {
@@ -43,13 +46,17 @@ static inline void semaphore_p(semaphore_t *semaphore) {
 }
 
 // return 0 if succeeded, 1 if timed out
-static inline bool
-semaphore_p_timedwait(semaphore_t *semaphore,
-                      long time_in_usec /*timeout in microseconds*/) {
+static inline bool semaphore_p_timedwait(
+    semaphore_t *semaphore,
+    unsigned long int time_in_usec /*timeout in microseconds*/) {
   bool ret = 0;
+  struct timespec abstime;
+
+  calc_abstime(time_in_usec, &abstime);
+
   mutex_lock(&semaphore->mutex);
   while (semaphore->v <= 0) {
-    ret = cond_timedwait(&semaphore->cond, &semaphore->mutex, time_in_usec);
+    ret = cond_timedwait(&semaphore->cond, &semaphore->mutex, &abstime);
     if (ret != 0) // timed out
       break;
   }

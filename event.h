@@ -9,10 +9,13 @@
   Version 1.0 2024/09/05
 
   Version 1.1 2024/09/10 change timedwait from abstime to microseconds
+
+  Version 1.2 2024/09/18 add calc_abstime
 */
 #ifndef EVENT_H
 #define EVENT_H
 #include "cond.h" // for cond_t, mutex_t
+#include "calc.h" // for calc_abstime
 
 typedef struct event_t {
   bool is_set;
@@ -69,28 +72,19 @@ static inline void event_wait(event_t *event) {
 
 // return 0 if succeeded, 1 if timed out
 static inline bool
-event_timedwait(event_t *event, long time_in_usec /*timeout in microseconds*/) {
+event_timedwait(event_t *event,
+                unsigned long int time_in_usec /*timeout in microseconds*/) {
   bool ret = 0;
   struct timespec abstime;
-  struct timeval tv;
-  const long MICROSECS_IN_A_SECOND = 1000000;
 
-  ret = gettimeofday(&tv, NULL);
-  halt_if(ret != 0);
-
-  tv.tv_usec += time_in_usec;
-  if (tv.tv_usec >= MICROSECS_IN_A_SECOND) {
-    tv.tv_sec += time_in_usec / MICROSECS_IN_A_SECOND;
-    tv.tv_usec %= MICROSECS_IN_A_SECOND;
-  }
-
-  abstime.tv_sec = tv.tv_sec;
-  abstime.tv_nsec = tv.tv_usec * 1000;
-  halt_if(abstime.tv_nsec < 999999999);
+  calc_abstime(time_in_usec, &abstime);
 
   mutex_lock(&event->mutex);
-  if (event->is_set == false)
+  do {
+    if (event->is_set)
+      break;
     ret = cond_timedwait(&event->cond, &event->mutex, &abstime);
+  } while (!ret);
   mutex_unlock(&event->mutex);
   return ret;
 }

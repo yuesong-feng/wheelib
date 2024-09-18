@@ -21,6 +21,7 @@ wlib dependency graph:
     rwlock/thread
         basic
     event/sem
+        calc
         cond
             mutex
                 basic

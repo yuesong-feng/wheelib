@@ -11,7 +11,6 @@
 #ifndef BASIC_H
 #define BASIC_H
 #include <stdlib.h> // for exit(EXIT_FAILURE)
-#include <sys/time.h> // for gettimeofday
 
 // <stdint.h> will be used to determine 32/64 bit platform
 #ifdef _WIN32
