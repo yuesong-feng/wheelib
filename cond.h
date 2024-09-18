@@ -8,10 +8,12 @@
 
   Version 1.0 2024/09/05
 
+  Version 1.1 2024/09/10 change timedwait from abstime to microseconds
 */
 #ifndef COND_H
 #define COND_H
-#include "mutex.h" // for mutex_t, halt_if, ETIMEDOUT
+#include "mutex.h"    // for mutex_t, halt_if, ETIMEDOUT
+#include <sys/time.h> // for gettimeofday
 
 typedef struct cond_t {
   pthread_cond_t cond;
@@ -45,7 +47,8 @@ static inline void cond_wait(cond_t *cond, mutex_t *mutex) {
 // return 0 if succeeded, 1 if timed out
 static inline bool cond_timedwait(cond_t *cond, mutex_t *mutex,
                                   const struct timespec *abstime) {
-  int ret = pthread_cond_timedwait(&cond->cond, &mutex->mutex, abstime);
+  int ret;
+  ret = pthread_cond_timedwait(&cond->cond, &mutex->mutex, abstime);
   halt_if(ret != 0 && ret != ETIMEDOUT);
   return ret == ETIMEDOUT;
 }

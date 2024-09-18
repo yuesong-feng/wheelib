@@ -2,7 +2,9 @@
 
   mem.h
 
-  memory utilities
+  memory utilities, from MySQL 8.4.0 InnoBase
+  alloc memory fail will cause system halt immediately,
+  so it's unnecessary for upper invocation to consider NULL-return
 
   Copyright (c) 2024 yuesong-feng 冯岳松
 

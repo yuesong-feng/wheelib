@@ -1,5 +1,6 @@
 #include "stack.h"
 #include "stdio.h"
+#include "event.h"
 
 int main() {
   stack_t *stk = stack_create();
@@ -22,6 +23,14 @@ int main() {
   char *buf2 = (char *)stack_pop_8b(stk);
 
   printf("%s\n", buf2);
+
+  event_t evt;
+
+  event_init(&evt);
+
+  event_timedwait(&evt, 3000000000);
+
+  event_destroy(&evt);
 
   return 0;
 }

@@ -8,6 +8,7 @@
 
   Version 1.0 2024/09/05
 
+  Version 1.1 2024/09/10 change timedwait from abstime to microseconds
 */
 #ifndef EVENT_H
 #define EVENT_H
@@ -67,17 +68,31 @@ static inline void event_wait(event_t *event) {
 }
 
 // return 0 if succeeded, 1 if timed out
-static inline bool event_timedwait(event_t *event,
-                                   const struct timespec *abstime) {
-  bool timed_out = 0;
+static inline bool
+event_timedwait(event_t *event, long time_in_usec /*timeout in microseconds*/) {
+  bool ret = 0;
+  struct timespec abstime;
+  struct timeval tv;
+  const long MICROSECS_IN_A_SECOND = 1000000;
+
+  ret = gettimeofday(&tv, NULL);
+  halt_if(ret != 0);
+
+  tv.tv_usec += time_in_usec;
+  if (tv.tv_usec >= MICROSECS_IN_A_SECOND) {
+    tv.tv_sec += time_in_usec / MICROSECS_IN_A_SECOND;
+    tv.tv_usec %= MICROSECS_IN_A_SECOND;
+  }
+
+  abstime.tv_sec = tv.tv_sec;
+  abstime.tv_nsec = tv.tv_usec * 1000;
+  halt_if(abstime.tv_nsec < 999999999);
+
   mutex_lock(&event->mutex);
-  do {
-    if (event->is_set)
-      break;
-    timed_out = cond_timedwait(&event->cond, &event->mutex, abstime);
-  } while (!timed_out);
+  if (event->is_set == false)
+    ret = cond_timedwait(&event->cond, &event->mutex, &abstime);
   mutex_unlock(&event->mutex);
-  return timed_out;
+  return ret;
 }
 
 #endif

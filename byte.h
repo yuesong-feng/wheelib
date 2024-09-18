@@ -17,6 +17,7 @@
 
 typedef unsigned char byte;
 
+// haven't cover all platform yet, linux and macos work well
 #ifdef __BYTE_ORDER__
     #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
         #define WLIB_LITTLE_ENDIAN

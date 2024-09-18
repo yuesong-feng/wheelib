@@ -2,7 +2,7 @@
 
   hash.h
 
-  hash utilities
+  hash utilities, from MySQL 8.4.0 InnoBase
 
   Copyright (c) 2024 yuesong-feng 冯岳松
 

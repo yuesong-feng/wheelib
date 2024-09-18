@@ -22,6 +22,7 @@
 
 #define overflow_if(cond) if (unlikely(cond)) return true;
 
+// from PosrgreSQL
 static inline bool
 int8_add_overflow(int8_t a, int8_t b, int8_t *result)
 {
@@ -239,6 +240,7 @@ uint64_mul_overflow(uint64_t a, uint64_t b, uint64_t *result)
     return false;
 }
 
+// from MySQL 8.4.0 InnoBase
 static inline uint64_t find_prime(uint64_t n) {
   uint64_t pow2;
   uint64_t i;

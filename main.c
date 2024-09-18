@@ -83,5 +83,9 @@ int main() {
 
   event_destroy(&event);
 
+  mem_heap_t *heap = mem_heap_create(0);
+  lst_t lst;
+  LIST_DATA_ADD_LAST(heap, lst, 123);
+
   return 0;
 }

@@ -6,7 +6,9 @@ simple(简单) + tidy(整洁) = beautiful art
 
 wlib is header-only, avoiding many problems related to compiling, static/dynamic library, etc.
 
-wlib trust operation system by considering all system calls should return properly, which may be dangerous in production environment requiring high stability
+wlib trust operation system by considering all system calls should return properly, which may be dangerous in production environment requiring high stability.
+
+wlib is for unix system now, Windows may be supported later.
 
 wlib includes C99 <stdbool.h> for delicate bool/true/false
 
@@ -29,3 +31,5 @@ wlib dependency graph:
                 basic
             calc
                 basic
+
+git push -u origin main
