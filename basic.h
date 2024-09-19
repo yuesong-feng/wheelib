@@ -13,17 +13,23 @@
 #include <stdlib.h> // for exit(EXIT_FAILURE)
 
 // <stdint.h> will be used to determine 32/64 bit platform
-#ifdef _WIN32
-    #ifdef _WIN64
-        #define WLIB64
-    #else
-        #define WLIB32
-    #endif
+#if __WORDSIZE == 64
+    #define WLIB64
+#elif __WORDSIZE == 32
+    #define WLIB32
 #else
-    #ifdef __x86_64__
-        #define WLIB64
-    #elif __i386__
-        #define WLIB32
+    #ifdef _WIN32
+        #ifdef _WIN64
+            #define WLIB64
+        #else
+            #define WLIB32
+        #endif
+    #else
+        #ifdef __x86_64__
+            #define WLIB64
+        #elif __i386__
+            #define WLIB32
+        #endif
     #endif
 #endif
 

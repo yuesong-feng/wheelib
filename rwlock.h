@@ -43,8 +43,7 @@ static inline bool rwlock_tryrdlock(rwlock_t *rwlock) {
 }
 
 // return 0 if succeeded, 1 if timed out
-static inline bool rwlock_timedrdlock(rwlock_t *rwlock,
-                                      const struct timespec *abstime) {
+static inline bool rwlock_timedrdlock(rwlock_t *rwlock, const struct timespec *abstime) {
   int ret = pthread_rwlock_timedrdlock(&rwlock->rwlock, abstime);
   halt_if(ret != 0 && ret != ETIMEDOUT);
   return ret == ETIMEDOUT;
@@ -63,8 +62,7 @@ static inline bool rwlock_trywrlock(rwlock_t *rwlock) {
 }
 
 // return 0 if succeeded, 1 if timed out
-static inline bool rwlock_timedwrlock(rwlock_t *rwlock,
-                                      const struct timespec *abstime) {
+static inline bool rwlock_timedwrlock(rwlock_t *rwlock, const struct timespec *abstime) {
   int ret = pthread_rwlock_timedwrlock(&rwlock->rwlock, abstime);
   halt_if(ret != 0 && ret != ETIMEDOUT);
   return ret == ETIMEDOUT;

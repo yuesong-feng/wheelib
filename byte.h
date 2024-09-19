@@ -19,15 +19,15 @@
 typedef unsigned char byte;
 
 // haven't cover all platform yet, linux and macos work well
-#ifdef __BYTE_ORDER__
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-#define WLIB_LITTLE_ENDIAN
+  #define WLIB_LITTLE_ENDIAN
 #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-#define WLIB_BIG_ENDIAN
-#endif
+  #define WLIB_BIG_ENDIAN
 #endif
 
-static inline void write1b(void *dest, uint8_t v) { *(uint8_t *)dest = v; }
+static inline void write1b(void *dest, uint8_t v) {
+  *(uint8_t *)dest = v;
+}
 
 static inline void write2b(void *dest, uint16_t v) {
 #if defined(WLIB_LITTLE_ENDIAN)
@@ -62,7 +62,9 @@ static inline void write8b(void *dest, uint64_t v) {
 #endif
 }
 
-static inline uint8_t read1b(void *src) { return *(uint8_t *)src; }
+static inline uint8_t read1b(void *src) {
+  return *(uint8_t *)src;
+}
 
 static inline uint16_t read2b(void *src) {
 #if defined(WLIB_LITTLE_ENDIAN)

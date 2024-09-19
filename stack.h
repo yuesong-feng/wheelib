@@ -32,12 +32,12 @@ static inline void stack_free(stack_t *stack) {
 
 static inline void stack_push_8b(stack_t *stack, uint64_t val) {
   void *buf = mem_heap_alloc(stack->heap, 8);
-  write8b(buf, val);
+  mach_write_to_8(buf, val);
 }
 
 static inline uint64_t stack_pop_8b(stack_t *stack) {
   void *buf = mem_heap_get_top(stack->heap, 8);
-  uint64_t ret = read8b(buf);
+  uint64_t ret = mach_read_from_8(buf);
   mem_heap_free_top(stack->heap, 8);
   return ret;
 }

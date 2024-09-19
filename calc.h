@@ -13,6 +13,7 @@
 #ifndef CALC_H
 #define CALC_H
 #include "basic.h"    // for unlikely
+#include <stdbool.h>  // for bool
 #include <stdint.h>   // for (u)int(n)_t
 #include <sys/time.h> // for struct timeval
 #include <time.h>     // for calc_abstime

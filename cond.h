@@ -42,8 +42,7 @@ static inline void cond_wait(cond_t *cond, mutex_t *mutex) {
 }
 
 // return 0 if succeeded, 1 if timed out
-static inline bool cond_timedwait(cond_t *cond, mutex_t *mutex,
-                                  const struct timespec *abstime) {
+static inline bool cond_timedwait(cond_t *cond, mutex_t *mutex, const struct timespec *abstime) {
   int ret;
   ret = pthread_cond_timedwait(&cond->cond, &mutex->mutex, abstime);
   halt_if(ret != 0 && ret != ETIMEDOUT);

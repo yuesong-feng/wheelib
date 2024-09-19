@@ -20,10 +20,8 @@
 
 typedef struct mem_block_t mem_block_t;
 struct mem_block_t {
-  LIST(mem_block_t)
-  base;
-  LIST_NODE(mem_block_t)
-  link;
+  LIST(mem_block_t) base;
+  LIST_NODE(mem_block_t) link;
   size_t len;
   size_t total_size;
   size_t free;
@@ -229,8 +227,7 @@ static inline void mem_heap_free_top(mem_heap_t *heap, size_t n) {
   }
 }
 
-static inline void *mem_heap_dup(mem_heap_t *heap, const void *data,
-                                 size_t len) {
+static inline void *mem_heap_dup(mem_heap_t *heap, const void *data, size_t len) {
   return memcpy(mem_heap_alloc(heap, len), data, len);
 }
 
