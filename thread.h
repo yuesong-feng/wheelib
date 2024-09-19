@@ -19,8 +19,7 @@ typedef pthread_t thread_t;
 typedef thread_t thread_id_t;
 typedef void *(*thread_func_t)(void *);
 
-static inline thread_t thread_create(thread_func_t func, void *arg,
-                                     thread_id_t *thread_id) {
+static inline thread_t thread_create(thread_func_t func, void *arg, thread_id_t *thread_id) {
   int ret;
   thread_t pthread;
 
@@ -49,7 +48,7 @@ static inline void thread_exit(void *exit_value, bool detach /*If true, the thre
   pthread_exit(exit_value);
 }
 
-static inline void thread_sleep(unsigned int tm /*time in microseconds*/) {
+static inline void thread_sleep(unsigned long tm /*time in microseconds*/) {
   struct timeval t;
   int ret;
 
@@ -60,8 +59,12 @@ static inline void thread_sleep(unsigned int tm /*time in microseconds*/) {
   halt_if(ret == -1);
 }
 
-static inline void thread_yield() { thread_sleep(0); }
+static inline void thread_yield() {
+  thread_sleep(0);
+}
 
-static inline thread_id_t thread_get_curr_id() { return (thread_id_t)pthread_self(); }
+static inline thread_id_t thread_get_curr_id() {
+  return (thread_id_t)pthread_self();
+}
 
 #endif

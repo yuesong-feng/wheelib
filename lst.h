@@ -16,89 +16,89 @@
 #define LST_H
 #include <stddef.h> // for size_t, NULL
 
-#define LIST(TYPE)                                                             \
-  struct {                                                                     \
-    size_t count;                                                              \
-    TYPE *first;                                                               \
-    TYPE *last;                                                                \
+#define LIST(TYPE) \
+  struct {         \
+    size_t count;  \
+    TYPE *first;   \
+    TYPE *last;    \
   }
 
-#define LIST_NODE(TYPE)                                                        \
-  struct {                                                                     \
-    TYPE *prev;                                                                \
-    TYPE *next;                                                                \
+#define LIST_NODE(TYPE) \
+  struct {              \
+    TYPE *prev;         \
+    TYPE *next;         \
   }
 
-#define LIST_INIT(LIST)                                                        \
-  {                                                                            \
-    (LIST).count = 0;                                                          \
-    (LIST).first = NULL;                                                       \
-    (LIST).last = NULL;                                                        \
+#define LIST_INIT(LIST)  \
+  {                      \
+    (LIST).count = 0;    \
+    (LIST).first = NULL; \
+    (LIST).last = NULL;  \
   }
 
-#define LIST_ADD_FIRST(LINK, LIST, NODE)                                       \
-  {                                                                            \
-    ((NODE)->LINK).prev = NULL;                                                \
-    ((NODE)->LINK).next = (LIST).first;                                        \
-                                                                               \
-    if ((LIST).first != NULL)                                                  \
-      (((LIST).first)->LINK).prev = (NODE);                                    \
-                                                                               \
-    (LIST).first = (NODE);                                                     \
-                                                                               \
-    if ((LIST).last == NULL)                                                   \
-      (LIST).last = (NODE);                                                    \
-                                                                               \
-    ++((LIST).count);                                                          \
+#define LIST_ADD_FIRST(LINK, LIST, NODE)    \
+  {                                         \
+    ((NODE)->LINK).prev = NULL;             \
+    ((NODE)->LINK).next = (LIST).first;     \
+                                            \
+    if ((LIST).first != NULL)               \
+      (((LIST).first)->LINK).prev = (NODE); \
+                                            \
+    (LIST).first = (NODE);                  \
+                                            \
+    if ((LIST).last == NULL)                \
+      (LIST).last = (NODE);                 \
+                                            \
+    ++((LIST).count);                       \
   }
 
-#define LIST_ADD_LAST(LINK, LIST, NODE)                                        \
-  {                                                                            \
-    ((NODE)->LINK).next = NULL;                                                \
-    ((NODE)->LINK).prev = (LIST).last;                                         \
-                                                                               \
-    if ((LIST).last != NULL)                                                   \
-      (((LIST).last)->LINK).next = (NODE);                                     \
-                                                                               \
-    (LIST).last = (NODE);                                                      \
-                                                                               \
-    if ((LIST).first == NULL)                                                  \
-      (LIST).first = (NODE);                                                   \
-                                                                               \
-    ++((LIST).count);                                                          \
+#define LIST_ADD_LAST(LINK, LIST, NODE)    \
+  {                                        \
+    ((NODE)->LINK).next = NULL;            \
+    ((NODE)->LINK).prev = (LIST).last;     \
+                                           \
+    if ((LIST).last != NULL)               \
+      (((LIST).last)->LINK).next = (NODE); \
+                                           \
+    (LIST).last = (NODE);                  \
+                                           \
+    if ((LIST).first == NULL)              \
+      (LIST).first = (NODE);               \
+                                           \
+    ++((LIST).count);                      \
   }
 
-#define LIST_INSERT_AFTER(LINK, LIST, NODE1, NODE2)                            \
-  {                                                                            \
-    ((NODE2)->LINK).prev = (NODE1);                                            \
-    ((NODE2)->LINK).next = ((NODE1)->LINK).next;                               \
-                                                                               \
-    if (((NODE2)->LINK).next != NULL)                                          \
-      ((((NODE2)->LINK).next)->LINK).prev = (NODE2);                           \
-    else                                                                       \
-      (LIST).last = (NODE2);                                                   \
-                                                                               \
-    ((NODE1)->LINK).next = (NODE2);                                            \
-                                                                               \
-    ++(LIST).count;                                                            \
+#define LIST_INSERT_AFTER(LINK, LIST, NODE1, NODE2)  \
+  {                                                  \
+    ((NODE2)->LINK).prev = (NODE1);                  \
+    ((NODE2)->LINK).next = ((NODE1)->LINK).next;     \
+                                                     \
+    if (((NODE2)->LINK).next != NULL)                \
+      ((((NODE2)->LINK).next)->LINK).prev = (NODE2); \
+    else                                             \
+      (LIST).last = (NODE2);                         \
+                                                     \
+    ((NODE1)->LINK).next = (NODE2);                  \
+                                                     \
+    ++(LIST).count;                                  \
   }
 
-#define LIST_REMOVE(LINK, LIST, NODE)                                          \
-  {                                                                            \
-    if (((NODE)->LINK).next != NULL)                                           \
-      ((((NODE)->LINK).next)->LINK).prev = ((NODE)->LINK).prev;                \
-    else                                                                       \
-      (LIST).last = ((NODE)->LINK).prev;                                       \
-                                                                               \
-    if (((NODE)->LINK).prev != NULL)                                           \
-      ((((NODE)->LINK).prev)->LINK).next = ((NODE)->LINK).next;                \
-    else                                                                       \
-      (LIST).first = ((NODE)->LINK).next;                                      \
-                                                                               \
-    ((NODE)->LINK).next = NULL;                                                \
-    ((NODE)->LINK).prev = NULL;                                                \
-                                                                               \
-    --(LIST).count;                                                            \
+#define LIST_REMOVE(LINK, LIST, NODE)                           \
+  {                                                             \
+    if (((NODE)->LINK).next != NULL)                            \
+      ((((NODE)->LINK).next)->LINK).prev = ((NODE)->LINK).prev; \
+    else                                                        \
+      (LIST).last = ((NODE)->LINK).prev;                        \
+                                                                \
+    if (((NODE)->LINK).prev != NULL)                            \
+      ((((NODE)->LINK).prev)->LINK).next = ((NODE)->LINK).next; \
+    else                                                        \
+      (LIST).first = ((NODE)->LINK).next;                       \
+                                                                \
+    ((NODE)->LINK).next = NULL;                                 \
+    ((NODE)->LINK).prev = NULL;                                 \
+                                                                \
+    --(LIST).count;                                             \
   }
 
 #define LIST_GET_NEXT(LINK, NODE) (((NODE)->LINK).next)
@@ -111,31 +111,32 @@
 
 #define LIST_GET_LAST(LIST) (LIST).last
 
-#define LIST_FOREACH(LINK, NODE, LIST)                                         \
-  for ((NODE) = LIST_GET_FIRST(LIST); (NODE) != NULL;                          \
+#define LIST_FOREACH(LINK, NODE, LIST)                \
+  for ((NODE) = LIST_GET_FIRST(LIST); (NODE) != NULL; \
        (NODE) = LIST_GET_NEXT(NODE))
 
 typedef struct lst_node_t lst_node_t;
 struct lst_node_t {
   void *data;
-  LIST_NODE(lst_node_t) link;
+  LIST_NODE(lst_node_t)
+  link;
 };
 
 typedef LIST(lst_node_t) lst_t;
 
 // caller should include "mem.h" for mem_heap_alloc
-#define LIST_DATA_ADD_LAST(heap, lst, val)                                     \
-  do {                                                                         \
-    lst_node_t *node = mem_heap_alloc(heap, sizeof(lst_node_t));               \
-    node->data = (void *)(uintptr_t)val;                                       \
-    LIST_ADD_LAST(link, lst, node);                                            \
+#define LIST_DATA_ADD_LAST(heap, lst, val)                       \
+  do {                                                           \
+    lst_node_t *node = mem_heap_alloc(heap, sizeof(lst_node_t)); \
+    node->data = (void *)(uintptr_t)val;                         \
+    LIST_ADD_LAST(link, lst, node);                              \
   } while (0)
 
-#define LIST_DATA_ADD_FIRST(heap, lst, val)                                    \
-  do {                                                                         \
-    lst_node_t *node = mem_heap_alloc(heap, sizeof(lst_node_t));               \
-    node->data = (void *)(uintptr_t)val;                                       \
-    LIST_ADD_FIRST(link, lst, node);                                           \
+#define LIST_DATA_ADD_FIRST(heap, lst, val)                      \
+  do {                                                           \
+    lst_node_t *node = mem_heap_alloc(heap, sizeof(lst_node_t)); \
+    node->data = (void *)(uintptr_t)val;                         \
+    LIST_ADD_FIRST(link, lst, node);                             \
   } while (0)
 
 #endif

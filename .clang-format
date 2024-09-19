@@ -1,1 +1,2 @@
-BasedOnStyle: llvm
+BasedOnStyle: LLVM
+ColumnLimit: 0

@@ -10,7 +10,7 @@
 */
 #ifndef COND_H
 #define COND_H
-#include "mutex.h"    // for mutex_t, halt_if, ETIMEDOUT
+#include "mutex.h" // for mutex_t, halt_if, ETIMEDOUT
 
 typedef struct cond_t {
   pthread_cond_t cond;

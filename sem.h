@@ -46,9 +46,7 @@ static inline void semaphore_p(semaphore_t *semaphore) {
 }
 
 // return 0 if succeeded, 1 if timed out
-static inline bool semaphore_p_timedwait(
-    semaphore_t *semaphore,
-    unsigned long int time_in_usec /*timeout in microseconds*/) {
+static inline bool semaphore_p_timedwait(semaphore_t *semaphore, unsigned long time_in_usec /*timeout in microseconds*/) {
   bool ret = 0;
   struct timespec abstime;
 

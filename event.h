@@ -14,8 +14,8 @@
 */
 #ifndef EVENT_H
 #define EVENT_H
-#include "cond.h" // for cond_t, mutex_t
 #include "calc.h" // for calc_abstime
+#include "cond.h" // for cond_t, mutex_t
 
 typedef struct event_t {
   bool is_set;
@@ -72,8 +72,7 @@ static inline void event_wait(event_t *event) {
 
 // return 0 if succeeded, 1 if timed out
 static inline bool
-event_timedwait(event_t *event,
-                unsigned long int time_in_usec /*timeout in microseconds*/) {
+event_timedwait(event_t *event, unsigned long time_in_usec /*timeout in microseconds*/) {
   bool ret = 0;
   struct timespec abstime;
 

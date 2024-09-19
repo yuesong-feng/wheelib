@@ -34,3 +34,6 @@ wlib dependency graph:
                 basic
 
 git push -u origin main
+
+stable release(won't change until next version):
+    lst hash mem mutex cond rwlock event sem basic byte calc

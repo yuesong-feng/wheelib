@@ -26,58 +26,55 @@ typedef struct hash_table_t {
   mem_heap_t *heap; // only for hash_8b_t, not for cells
 } hash_table_t;
 
-#define HASH_INSERT(TYPE, LINK, TABLE, HASH_VALUE, NODE)                       \
-  do {                                                                         \
-    hash_cell_t *cell3333;                                                     \
-    TYPE *struct3333;                                                          \
-    const uint64_t hash_value3333 = HASH_VALUE;                                \
-                                                                               \
-    (NODE)->LINK = NULL;                                                       \
-                                                                               \
-    cell3333 =                                                                 \
-        hash_get_nth_cell(TABLE, hash_calc_cell_id(hash_value3333, TABLE));    \
-                                                                               \
-    if (cell3333->node == NULL) {                                              \
-      cell3333->node = NODE;                                                   \
-    } else {                                                                   \
-      struct3333 = (TYPE *)cell3333->node;                                     \
-                                                                               \
-      while (struct3333->LINK != NULL) {                                       \
-        struct3333 = (TYPE *)struct3333->LINK;                                 \
-      }                                                                        \
-                                                                               \
-      struct3333->LINK = NODE;                                                 \
-    }                                                                          \
+#define HASH_INSERT(TYPE, LINK, TABLE, HASH_VALUE, NODE)                           \
+  do {                                                                             \
+    hash_cell_t *cell3333;                                                         \
+    TYPE *struct3333;                                                              \
+    const uint64_t hash_value3333 = HASH_VALUE;                                    \
+                                                                                   \
+    (NODE)->LINK = NULL;                                                           \
+                                                                                   \
+    cell3333 = hash_get_nth_cell(TABLE, hash_calc_cell_id(hash_value3333, TABLE)); \
+                                                                                   \
+    if (cell3333->node == NULL) {                                                  \
+      cell3333->node = NODE;                                                       \
+    } else {                                                                       \
+      struct3333 = (TYPE *)cell3333->node;                                         \
+                                                                                   \
+      while (struct3333->LINK != NULL) {                                           \
+        struct3333 = (TYPE *)struct3333->LINK;                                     \
+      }                                                                            \
+                                                                                   \
+      struct3333->LINK = NODE;                                                     \
+    }                                                                              \
   } while (0)
 
-#define HASH_DELETE(TYPE, LINK, TABLE, HASH_VALUE, NODE)                       \
-  do {                                                                         \
-    hash_cell_t *cell3333;                                                     \
-    TYPE *struct3333;                                                          \
-    const uint64_t hash_value3333 = HASH_VALUE;                                \
-                                                                               \
-    cell3333 =                                                                 \
-        hash_get_nth_cell(TABLE, hash_calc_cell_id(hash_value3333, TABLE));    \
-                                                                               \
-    if (cell3333->node == NODE) {                                              \
-      cell3333->node = NODE->LINK;                                             \
-    } else {                                                                   \
-      struct3333 = (TYPE *)cell3333->node;                                     \
-                                                                               \
-      while (struct3333->LINK != NODE) {                                       \
-        struct3333 = (TYPE *)struct3333->LINK;                                 \
-      }                                                                        \
-                                                                               \
-      struct3333->LINK = NODE->LINK;                                           \
-    }                                                                          \
+#define HASH_DELETE(TYPE, LINK, TABLE, HASH_VALUE, NODE)                           \
+  do {                                                                             \
+    hash_cell_t *cell3333;                                                         \
+    TYPE *struct3333;                                                              \
+    const uint64_t hash_value3333 = HASH_VALUE;                                    \
+                                                                                   \
+    cell3333 = hash_get_nth_cell(TABLE, hash_calc_cell_id(hash_value3333, TABLE)); \
+                                                                                   \
+    if (cell3333->node == NODE) {                                                  \
+      cell3333->node = NODE->LINK;                                                 \
+    } else {                                                                       \
+      struct3333 = (TYPE *)cell3333->node;                                         \
+                                                                                   \
+      while (struct3333->LINK != NODE) {                                           \
+        struct3333 = (TYPE *)struct3333->LINK;                                     \
+      }                                                                            \
+                                                                                   \
+      struct3333->LINK = NODE->LINK;                                               \
+    }                                                                              \
   } while (0)
 
 static inline hash_cell_t *hash_get_nth_cell(hash_table_t *table, size_t n) {
-  return table->cells + n;
+  return &table->cells[n];
 }
 
-static inline uint64_t hash_calc_cell_id(uint64_t hash_value,
-                                         hash_table_t *table) {
+static inline uint64_t hash_calc_cell_id(uint64_t hash_value, hash_table_t *table) {
   return hash_value % table->n_cells;
 }
 
@@ -87,41 +84,40 @@ static inline void *hash_get_first(hash_table_t *table, size_t cell_id) {
 
 #define HASH_GET_NEXT(LINK, NODE) ((NODE)->LINK)
 
-#define HASH_SEARCH(LINK, TABLE, HASH_VALUE, TYPE, NODE, COND)                 \
-  {                                                                            \
-    const uint64_t hash_value3333 = HASH_VALUE;                                \
-                                                                               \
-    (NODE) =                                                                   \
-        (TYPE)hash_get_first(TABLE, hash_calc_cell_id(hash_value3333, TABLE)); \
-                                                                               \
-    while ((NODE) != NULL) {                                                   \
-      if (COND) {                                                              \
-        break;                                                                 \
-      } else {                                                                 \
-        (NODE) = (TYPE)HASH_GET_NEXT(LINK, NODE);                              \
-      }                                                                        \
-    }                                                                          \
+#define HASH_SEARCH(LINK, TABLE, HASH_VALUE, TYPE, NODE, COND)                      \
+  {                                                                                 \
+    const uint64_t hash_value3333 = HASH_VALUE;                                     \
+                                                                                    \
+    (NODE) = (TYPE)hash_get_first(TABLE, hash_calc_cell_id(hash_value3333, TABLE)); \
+                                                                                    \
+    while ((NODE) != NULL) {                                                        \
+      if (COND) {                                                                   \
+        break;                                                                      \
+      } else {                                                                      \
+        (NODE) = (TYPE)HASH_GET_NEXT(LINK, NODE);                                   \
+      }                                                                             \
+    }                                                                               \
   }
 
-#define HASH_SEARCH_ALL(LINK, TABLE, TYPE, NODE, COND)                         \
-  do {                                                                         \
-    size_t i3333;                                                              \
-                                                                               \
-    for (i3333 = (TABLE)->n_cells; i3333--;) {                                 \
-      (NODE) = (TYPE)hash_get_first(TABLE, i3333);                             \
-                                                                               \
-      while ((NODE) != NULL) {                                                 \
-        if (COND) {                                                            \
-          break;                                                               \
-        }                                                                      \
-                                                                               \
-        (NODE) = (TYPE)HASH_GET_NEXT(LINK, NODE);                              \
-      }                                                                        \
-                                                                               \
-      if ((NODE) != NULL) {                                                    \
-        break;                                                                 \
-      }                                                                        \
-    }                                                                          \
+#define HASH_SEARCH_ALL(LINK, TABLE, TYPE, NODE, COND) \
+  do {                                                 \
+    size_t i3333;                                      \
+                                                       \
+    for (i3333 = (TABLE)->n_cells; i3333--;) {         \
+      (NODE) = (TYPE)hash_get_first(TABLE, i3333);     \
+                                                       \
+      while ((NODE) != NULL) {                         \
+        if (COND) {                                    \
+          break;                                       \
+        }                                              \
+                                                       \
+        (NODE) = (TYPE)HASH_GET_NEXT(LINK, NODE);      \
+      }                                                \
+                                                       \
+      if ((NODE) != NULL) {                            \
+        break;                                         \
+      }                                                \
+    }                                                  \
   } while (0)
 
 static inline void hash_table_clear(hash_table_t *table) {

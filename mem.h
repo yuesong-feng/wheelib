@@ -13,15 +13,17 @@
 */
 #ifndef MEM_H
 #define MEM_H
-#include "lst.h"  // for list
-#include "byte.h" // for byte
-#include "calc.h" // for calc_align
+#include "byte.h"   // for byte
+#include "calc.h"   // for calc_align
+#include "lst.h"    // for list
 #include <string.h> // for memcpy
 
 typedef struct mem_block_t mem_block_t;
 struct mem_block_t {
-  LIST(mem_block_t) base;
-  LIST_NODE(mem_block_t) link;
+  LIST(mem_block_t)
+  base;
+  LIST_NODE(mem_block_t)
+  link;
   size_t len;
   size_t total_size;
   size_t free;
@@ -52,7 +54,7 @@ static inline mem_block_t *mem_heap_create_block(mem_heap_t *heap, size_t n) {
   block->start = MEM_BLOCK_HEADER_SIZE;
   block->free = MEM_BLOCK_HEADER_SIZE;
 
-  if (heap == NULL)
+  if (unlikely(heap == NULL))
     block->total_size = len;
   else
     heap->total_size += len;
@@ -122,7 +124,7 @@ static inline mem_block_t *mem_heap_add_block(mem_heap_t *heap, size_t n) {
 
 static inline void *mem_heap_alloc(mem_heap_t *heap, size_t n) {
   mem_block_t *block;
-  void *buf;
+  byte *buf;
   size_t free;
 
   block = LIST_GET_LAST(heap->base);
@@ -177,6 +179,7 @@ static inline void mem_heap_free_heap_top(mem_heap_t *heap, byte *old_top) {
 
   block->free = old_top - (byte *)block;
 
+  // if free == start, we may free the block if it is not the first one
   if ((heap != block) && (block->free == block->start)) {
     mem_heap_block_free(heap, block);
   }
@@ -198,6 +201,20 @@ static inline void *mem_heap_get_top(mem_heap_t *heap, size_t n) {
   return (void *)buf;
 }
 
+/* Checks if a given chunk of memory is the topmost element stored in the
+heap. If this is the case, then calling mem_heap_free_top() would free
+that element from the heap. */
+static inline bool mem_heap_is_top(mem_heap_t *heap, const void *buf, size_t buf_sz) {
+  const byte *first_free_byte;
+  const byte *presumed_start_of_buf;
+
+  first_free_byte = mem_heap_get_heap_top(heap);
+
+  presumed_start_of_buf = first_free_byte - MEM_SPACE_NEEDED(buf_sz);
+
+  return presumed_start_of_buf == buf;
+}
+
 // TODO: n is bigger than block size?
 static inline void mem_heap_free_top(mem_heap_t *heap, size_t n) {
   mem_block_t *block;
@@ -206,6 +223,7 @@ static inline void mem_heap_free_top(mem_heap_t *heap, size_t n) {
 
   block->free = block->free - MEM_SPACE_NEEDED(n);
 
+  // if free == start, we may free the block if it is not the first one
   if ((heap != block) && (block->free == block->start)) {
     mem_heap_block_free(heap, block);
   }
@@ -220,8 +238,7 @@ static inline char *mem_heap_strdup(mem_heap_t *heap, const char *str) {
   return (char *)mem_heap_dup(heap, str, strlen(str) + 1);
 }
 
-static inline char *mem_heap_strdupl(mem_heap_t *heap, const char *str,
-                                     size_t len) {
+static inline char *mem_heap_strdupl(mem_heap_t *heap, const char *str, size_t len) {
   char *s = (char *)mem_heap_alloc(heap, len + 1);
   s[len] = 0;
   if (len > 0)
@@ -229,8 +246,7 @@ static inline char *mem_heap_strdupl(mem_heap_t *heap, const char *str,
   return s;
 }
 
-static inline char *mem_heap_strcat(mem_heap_t *heap, const char *s1,
-                                    const char *s2) {
+static inline char *mem_heap_strcat(mem_heap_t *heap, const char *s1, const char *s2) {
   char *s;
   size_t s1_len = strlen(s1);
   size_t s2_len = strlen(s2);
