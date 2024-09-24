@@ -10,6 +10,7 @@
 
   Version 1.0 2024/09/05
 
+  Version 1.1 2024/09/24 add mem_strdup mem_strdupl
 */
 #ifndef MEM_H
 #define MEM_H
@@ -238,7 +239,7 @@ static inline char *mem_heap_strdup(mem_heap_t *heap, const char *str) {
 static inline char *mem_heap_strdupl(mem_heap_t *heap, const char *str, size_t len) {
   char *s = (char *)mem_heap_alloc(heap, len + 1);
   s[len] = 0;
-  if (len > 0)
+  if (likely(len > 0))
     memcpy(s, str, len);
   return s;
 }
@@ -275,6 +276,17 @@ static inline void mem_free(void *ptr) {
   heap = (mem_heap_t *)((byte *)ptr - MEM_BLOCK_HEADER_SIZE);
 
   mem_heap_free(heap);
+}
+
+static inline char *mem_strdup(const char *str) {
+  size_t len = strlen(str) + 1;
+  return (char *)memcpy(mem_alloc(len), str, len);
+}
+
+static inline char *mem_strdupl(const char *str, size_t len) {
+  char *s = (char *)mem_alloc(len + 1);
+  s[len] = 0;
+  return (char *)memcpy(s, str, len);
 }
 
 #endif
