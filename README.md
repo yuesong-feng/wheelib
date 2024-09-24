@@ -1,8 +1,8 @@
 # wheelib
 
-Design Philosophy of wheelib:
+wheelib(Whee[wiː] Lib) is a industrial-grade C library.
 
-simple(简单) + tidy(整洁) = beautiful art
+Design Philosophy of wheelib: simple(简单) + tidy(整洁)
 
 wlib is header-only, avoiding many problems related to compiling, static/dynamic library, etc.
 
@@ -12,9 +12,26 @@ wlib is for unix system now, Windows may be supported later.
 
 wlib includes C99 <stdbool.h> for delicate bool/true/false
 
-wlib includes C99 <stdint.h> because it's really hard for the lib to perfectly define 32/64 bit platform.
+wlib includes C99 <stdint.h> because it's really hard for the lib itself to perfectly define 32/64 bit platform.
 
-wlib doesn't include <stdio.h>
+wlib doesn't include <stdio.h> now
+
+|  modular   | description  |
+|  ----      | ----  |
+| basic      | some basic defines |
+| byte       | byte utilities |
+| calc       | calculations |
+| mutex      | mutex lock |
+| rwlock     | read-write lock |
+| cond       | conditional variable |
+| event      | event utilities |
+| sem        | semaphore utilities |
+| mem        | memory utilities |
+| thread     | thread utilities |
+| lst        | double-linked list |
+| hash       | simple static hash table |
+| atomic     | atomic utilities |
+| io         | input-output utilities |
 
 wlib dependency graph:
 
@@ -32,8 +49,3 @@ wlib dependency graph:
                 basic
             calc
                 basic
-
-git push -u origin main
-
-stable release(won't change until next version):
-    lst hash mem mutex cond rwlock event sem basic byte calc
