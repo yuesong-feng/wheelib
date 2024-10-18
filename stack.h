@@ -11,7 +11,7 @@
 */
 #ifndef STACK_H
 #define STACK_H
-#include "mem.h"  // for mem_heap
+#include "mem.h" // for mem_heap
 
 typedef struct stack_t {
   mem_heap_t *heap;

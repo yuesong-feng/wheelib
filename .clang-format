@@ -1,2 +1,6 @@
-BasedOnStyle: LLVM
+BasedOnStyle: LLVM     
 ColumnLimit: 0
+IndentPPDirectives: BeforeHash
+Macros:
+- LIST(TYPE)
+- LIST_NODE(TYPE)
