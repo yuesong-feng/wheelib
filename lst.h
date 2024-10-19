@@ -111,9 +111,8 @@
 
 #define LIST_GET_LAST(LIST) (LIST).last
 
-#define LIST_FOREACH(LINK, NODE, LIST)                \
-  for ((NODE) = LIST_GET_FIRST(LIST); (NODE) != NULL; \
-       (NODE) = LIST_GET_NEXT(NODE))
+#define LIST_FOREACH(LINK, NODE, LIST) \
+  for ((NODE) = LIST_GET_FIRST(LIST); (NODE) != NULL; (NODE) = LIST_GET_NEXT(LINK, NODE))
 
 typedef struct lst_node_t lst_node_t;
 struct lst_node_t {

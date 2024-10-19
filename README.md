@@ -32,6 +32,7 @@ wlib doesn't include <stdio.h> now
 | hash       | simple static hash table |
 | atomic     | atomic utilities |
 | io         | input-output utilities |
+| vm         | stack based cpu virtual machine |
 
 wlib dependency graph:
 
