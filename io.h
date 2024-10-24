@@ -18,7 +18,7 @@ static inline void get_word(FILE *file, char *out) {
   int ret = fscanf(file, "%s", out);
   if (unlikely(ret == EOF))
     out[0] = '\0';
-  halt_if(ret != 1);
+  ast(ret == 1);
 }
 
 #endif

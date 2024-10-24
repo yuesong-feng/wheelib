@@ -11,6 +11,8 @@
   Version 1.1 2024/09/10 change timedwait from abstime to microseconds
 
   Version 1.2 2024/09/18 add calc_abstime
+
+  Version 1.3 2024/10/24 change to MySQL 9.1.0
 */
 #ifndef EVENT_H
 #define EVENT_H
@@ -34,6 +36,7 @@ static inline void event_destroy(event_t *event) {
   mutex_destroy(&event->mutex);
 }
 
+/** Set the event */
 static inline void event_set(event_t *event) {
   mutex_lock(&event->mutex);
   if (!event->is_set) {
@@ -43,17 +46,17 @@ static inline void event_set(event_t *event) {
   mutex_unlock(&event->mutex);
 }
 
-// return 0 if succeeded, 1 if EBUSY
+/** @return true if succeeded */
 static inline bool event_tryset(event_t *event) {
-  if (mutex_trylock(&event->mutex) == 0) {
+  if (mutex_trylock(&event->mutex)) {
     if (!event->is_set) {
       event->is_set = true;
       cond_broadcast(&event->cond);
     }
     mutex_unlock(&event->mutex);
-    return 0;
+    return true;
   }
-  return 1;
+  return false;
 }
 
 static inline void event_reset(event_t *event) {
@@ -70,10 +73,10 @@ static inline void event_wait(event_t *event) {
   mutex_unlock(&event->mutex);
 }
 
-// return 0 if succeeded, 1 if timed out
+/** @return true if timed out */
 static inline bool
 event_timedwait(event_t *event, unsigned long time_in_usec /*timeout in microseconds*/) {
-  bool ret = 0;
+  bool timed_out = false;
   struct timespec abstime;
 
   calc_abstime(time_in_usec, &abstime);
@@ -82,10 +85,10 @@ event_timedwait(event_t *event, unsigned long time_in_usec /*timeout in microsec
   do {
     if (event->is_set)
       break;
-    ret = cond_timedwait(&event->cond, &event->mutex, &abstime);
-  } while (!ret);
+    timed_out = cond_timedwait(&event->cond, &event->mutex, &abstime);
+  } while (!timed_out);
   mutex_unlock(&event->mutex);
-  return ret;
+  return timed_out ? 1 : 0;
 }
 
 #endif

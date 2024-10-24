@@ -11,7 +11,7 @@
 */
 #ifndef THREAD_H
 #define THREAD_H
-#include "basic.h"      // for halt_if
+#include "basic.h"      // for ast
 #include <pthread.h>    // for pthread
 #include <sys/select.h> // for select
 
@@ -24,7 +24,7 @@ static inline thread_t thread_create(thread_func_t func, void *arg, thread_id_t 
   thread_t pthread;
 
   ret = pthread_create(&pthread, NULL, func, arg);
-  halt_if(ret != 0);
+  ast(ret == 0);
 
   if (thread_id)
     *thread_id = pthread;
@@ -34,20 +34,19 @@ static inline thread_t thread_create(thread_func_t func, void *arg, thread_id_t 
 
 static inline void thread_join(thread_t thread) {
   int ret = pthread_join(thread, NULL);
-  halt_if(ret != 0);
+  /* Waiting on already-quit threads is allowed. */
+  ut_ad(ret == 0 || ret == ESRCH);
 }
 
 static inline void thread_exit(void *exit_value, bool detach /*If true, the thread will be detached right before exiting. If false, another thread is responsible for joining this thread.*/) {
-  int ret;
-
   if (detach) {
-    ret = pthread_detach(pthread_self());
-    halt_if(ret != 0);
+    pthread_detach(pthread_self());
   }
 
   pthread_exit(exit_value);
 }
 
+/** The thread sleeps at least the time given in microseconds. */
 static inline void thread_sleep(unsigned long tm /*time in microseconds*/) {
   struct timeval t;
   int ret;
@@ -55,10 +54,10 @@ static inline void thread_sleep(unsigned long tm /*time in microseconds*/) {
   t.tv_sec = tm / 1000000;
   t.tv_usec = tm % 1000000;
 
-  ret = select(0, NULL, NULL, NULL, &t);
-  halt_if(ret == -1);
+  select(0, NULL, NULL, NULL, &t);
 }
 
+/** Advises the os to give up remainder of the thread's time slice. */
 static inline void thread_yield() {
   thread_sleep(0);
 }

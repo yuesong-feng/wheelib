@@ -23,16 +23,15 @@ typedef struct hash_cell_t {
 typedef struct hash_table_t {
   hash_cell_t *cells;
   size_t n_cells;
-  mem_heap_t *heap; // only for hash_8b_t, not for cells
 } hash_table_t;
 
-#define HASH_INSERT(TYPE, LINK, TABLE, HASH_VALUE, NODE)                           \
+#define HASH_INSERT(TYPE, NAME, TABLE, HASH_VALUE, NODE)                           \
   do {                                                                             \
     hash_cell_t *cell3333;                                                         \
     TYPE *struct3333;                                                              \
     const uint64_t hash_value3333 = HASH_VALUE;                                    \
                                                                                    \
-    (NODE)->LINK = NULL;                                                           \
+    (NODE)->NAME = NULL;                                                           \
                                                                                    \
     cell3333 = hash_get_nth_cell(TABLE, hash_calc_cell_id(hash_value3333, TABLE)); \
                                                                                    \
@@ -41,15 +40,15 @@ typedef struct hash_table_t {
     } else {                                                                       \
       struct3333 = (TYPE *)cell3333->node;                                         \
                                                                                    \
-      while (struct3333->LINK != NULL) {                                           \
-        struct3333 = (TYPE *)struct3333->LINK;                                     \
+      while (struct3333->NAME != NULL) {                                           \
+        struct3333 = (TYPE *)struct3333->NAME;                                     \
       }                                                                            \
                                                                                    \
-      struct3333->LINK = NODE;                                                     \
+      struct3333->NAME = NODE;                                                     \
     }                                                                              \
   } while (0)
 
-#define HASH_DELETE(TYPE, LINK, TABLE, HASH_VALUE, NODE)                           \
+#define HASH_DELETE(TYPE, NAME, TABLE, HASH_VALUE, NODE)                           \
   do {                                                                             \
     hash_cell_t *cell3333;                                                         \
     TYPE *struct3333;                                                              \
@@ -58,12 +57,13 @@ typedef struct hash_table_t {
     cell3333 = hash_get_nth_cell(TABLE, hash_calc_cell_id(hash_value3333, TABLE)); \
                                                                                    \
     if (cell3333->node == NODE) {                                                  \
-      cell3333->node = NODE->LINK;                                                 \
+      cell3333->node = NODE->NAME;                                                 \
     } else {                                                                       \
       struct3333 = (TYPE *)cell3333->node;                                         \
                                                                                    \
-      while (struct3333->LINK != NODE) {                                           \
-        struct3333 = (TYPE *)struct3333->LINK;                                     \
+      while (struct3333->NAME != NODE) {                                           \
+        struct3333 = (TYPE *)struct3333->NAME;                                     \
+        ast(struct3333);                                                           \
       }                                                                            \
                                                                                    \
       struct3333->LINK = NODE->LINK;                                               \
@@ -71,10 +71,13 @@ typedef struct hash_table_t {
   } while (0)
 
 static inline hash_cell_t *hash_get_nth_cell(hash_table_t *table, size_t n) {
+  astd(table);
+  astd(n < table->n_cells);
   return &table->cells[n];
 }
 
 static inline uint64_t hash_calc_cell_id(uint64_t hash_value, hash_table_t *table) {
+  astd(table);
   return hash_value % table->n_cells;
 }
 
@@ -82,9 +85,9 @@ static inline void *hash_get_first(hash_table_t *table, size_t cell_id) {
   return hash_get_nth_cell(table, cell_id)->node;
 }
 
-#define HASH_GET_NEXT(LINK, NODE) ((NODE)->LINK)
+#define HASH_GET_NEXT(NAME, NODE) ((NODE)->NAME)
 
-#define HASH_SEARCH(LINK, TABLE, HASH_VALUE, TYPE, NODE, COND)                      \
+#define HASH_SEARCH(NAME, TABLE, HASH_VALUE, TYPE, NODE, COND)                      \
   {                                                                                 \
     const uint64_t hash_value3333 = HASH_VALUE;                                     \
                                                                                     \
@@ -94,12 +97,12 @@ static inline void *hash_get_first(hash_table_t *table, size_t cell_id) {
       if (COND) {                                                                   \
         break;                                                                      \
       } else {                                                                      \
-        (NODE) = (TYPE)HASH_GET_NEXT(LINK, NODE);                                   \
+        (NODE) = (TYPE)HASH_GET_NEXT(NAME, NODE);                                   \
       }                                                                             \
     }                                                                               \
   }
 
-#define HASH_SEARCH_ALL(LINK, TABLE, TYPE, NODE, COND) \
+#define HASH_SEARCH_ALL(NAME, TABLE, TYPE, NODE, COND) \
   do {                                                 \
     size_t i3333;                                      \
                                                        \
@@ -111,7 +114,7 @@ static inline void *hash_get_first(hash_table_t *table, size_t cell_id) {
           break;                                       \
         }                                              \
                                                        \
-        (NODE) = (TYPE)HASH_GET_NEXT(LINK, NODE);      \
+        (NODE) = (TYPE)HASH_GET_NEXT(NAME, NODE);      \
       }                                                \
                                                        \
       if ((NODE) != NULL) {                            \
@@ -121,9 +124,8 @@ static inline void *hash_get_first(hash_table_t *table, size_t cell_id) {
   } while (0)
 
 static inline void hash_table_clear(hash_table_t *table) {
+  astd(table);
   memset(table->cells, 0x0, table->n_cells * sizeof(hash_cell_t));
-  if (table->heap)
-    mem_heap_empty(table->heap);
 }
 
 static inline hash_table_t *hash_create(size_t n) {
@@ -135,7 +137,6 @@ static inline hash_table_t *hash_create(size_t n) {
   table = (hash_table_t *)mem_alloc(sizeof(hash_table_t));
   table->cells = (hash_cell_t *)mem_alloc(sizeof(hash_cell_t) * prime);
   table->n_cells = prime;
-  table->heap = NULL;
 
   hash_table_clear(table);
 
@@ -143,35 +144,10 @@ static inline hash_table_t *hash_create(size_t n) {
 }
 
 static inline void hash_table_free(hash_table_t *table) {
-  if (table->heap)
-    mem_heap_free(table->heap);
+  astd(table);
+  astd(table->cells);
   mem_free(table->cells);
   mem_free(table);
-}
-
-typedef struct hash_8b_t {
-  uint64_t val;
-  hash_node_t link;
-} hash_8b_t;
-
-static inline void hash_insert_8b(hash_table_t *table, uint64_t val) {
-  hash_8b_t *cell;
-  if (unlikely(table->heap == NULL))
-    table->heap = mem_heap_create(0);
-  cell = (hash_8b_t *)mem_heap_alloc(table->heap, sizeof(hash_8b_t));
-  cell->val = val;
-  HASH_INSERT(hash_8b_t, link, table, val, cell);
-}
-
-static inline hash_8b_t *hash_search_8b(hash_table_t *table, uint64_t val) {
-  hash_8b_t *cell;
-  HASH_SEARCH(link, table, val, hash_8b_t *, cell, cell->val == val);
-  return cell;
-}
-
-static inline void hash_delete_8b(hash_table_t *table, hash_8b_t *cell) {
-  HASH_DELETE(hash_8b_t, link, table, cell->val, cell);
-  mem_heap_free_top(table->heap, sizeof(hash_8b_t));
 }
 
 #endif

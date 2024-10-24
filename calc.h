@@ -18,7 +18,12 @@
 #include <sys/time.h> // for struct timeval
 #include <time.h>     // for calc_abstime
 
-#define calc_align(n, m) (((n) + ((m) - 1)) & ~((m) - 1))
+/** Calculates the smallest multiple of m that is not smaller than n
+ when m is a power of two.  In other words, rounds n up to m * k.
+ @param n in: number to round up
+ @param m in: alignment, must be a power of two
+ @return n rounded up to the smallest possible integer multiple of m */
+#define ut_calc_align(n, m) (((n) + ((m) - 1)) & ~((m) - 1))
 #define bits_in_bytes(b) (((b) + 7UL) / 8UL)
 
 #define max(x, y) ((x) > (y) ? (x) : (y))
@@ -197,7 +202,7 @@ static inline bool uint64_mul_overflow(uint64_t a, uint64_t b, uint64_t *result)
   return false;
 }
 
-// from MySQL 8.4.0 InnoBase
+// from MySQL 9.1.0 InnoBase
 static inline uint64_t find_prime(uint64_t n) {
   uint64_t pow2;
   uint64_t i;
@@ -252,9 +257,7 @@ static inline uint64_t find_prime(uint64_t n) {
 
 // used by event_timedwait and semaphore_p_timedwait
 // convert microseconds to abstime
-#define ULINT_UNDEFINED ((unsigned long)(-1))
-#define ULINT_MAX ((unsigned long)(-2))
-#define INFINITE_TIME ULINT_UNDEFINED
+#define INFINITE_TIME ((unsigned long)(-1)) // ULINT_UNDEFINED
 static inline void calc_abstime(unsigned long time_in_usec /*timeout in microseconds, or INFINITE_TIME*/, struct timespec *abstime) {
   const unsigned long MICROSECS_IN_A_SECOND = 1000000;
   if (time_in_usec != INFINITE_TIME) {
@@ -262,7 +265,7 @@ static inline void calc_abstime(unsigned long time_in_usec /*timeout in microsec
     int ret;
 
     ret = gettimeofday(&tv, NULL);
-    halt_if(ret != 0);
+    ast(ret == 0);
 
     tv.tv_usec += time_in_usec;
 
@@ -275,9 +278,9 @@ static inline void calc_abstime(unsigned long time_in_usec /*timeout in microsec
     abstime->tv_nsec = tv.tv_usec * 1000;
   } else {
     abstime->tv_nsec = 999999999;
-    abstime->tv_sec = (time_t)ULINT_MAX;
+    abstime->tv_sec = (time_t)(unsigned long)(-2); // ULINT_MAX
   }
-  halt_if(!(abstime->tv_nsec <= 999999999));
+  ast(abstime->tv_nsec <= 999999999);
 }
 
 #endif

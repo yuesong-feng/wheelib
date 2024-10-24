@@ -11,6 +11,8 @@
   Version 1.1 2024/09/09 add LIST_FOREACH
 
   Version 1.2 2024/09/10 add lst_t, lst_node_t and relative operation
+
+  Version 1.2 2024/10/24 sync MySQL 9.1.0
 */
 #ifndef LST_H
 #define LST_H
@@ -113,29 +115,5 @@
 
 #define LIST_FOREACH(LINK, NODE, LIST) \
   for ((NODE) = LIST_GET_FIRST(LIST); (NODE) != NULL; (NODE) = LIST_GET_NEXT(LINK, NODE))
-
-typedef struct lst_node_t lst_node_t;
-struct lst_node_t {
-  void *data;
-  LIST_NODE(lst_node_t)
-  link;
-};
-
-typedef LIST(lst_node_t) lst_t;
-
-// caller should include "mem.h" for mem_heap_alloc
-#define LIST_DATA_ADD_LAST(heap, lst, val)                       \
-  do {                                                           \
-    lst_node_t *node = mem_heap_alloc(heap, sizeof(lst_node_t)); \
-    node->data = (void *)(uintptr_t)val;                         \
-    LIST_ADD_LAST(link, lst, node);                              \
-  } while (0)
-
-#define LIST_DATA_ADD_FIRST(heap, lst, val)                      \
-  do {                                                           \
-    lst_node_t *node = mem_heap_alloc(heap, sizeof(lst_node_t)); \
-    node->data = (void *)(uintptr_t)val;                         \
-    LIST_ADD_FIRST(link, lst, node);                             \
-  } while (0)
 
 #endif

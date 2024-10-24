@@ -131,7 +131,7 @@ static inline void op_pack(op_lst_t *ops, byte *bytecode) {
       write2b(bytecode + 2, ((op_store_t*)op)->len);
       break;
     default:
-      halt_if(true);
+      ast(false);
     }
   }
 }

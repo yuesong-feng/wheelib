@@ -45,7 +45,7 @@ static inline void semaphore_p(semaphore_t *semaphore) {
   mutex_unlock(&semaphore->mutex);
 }
 
-// return 0 if succeeded, 1 if timed out
+/** @return true if timed out */
 static inline bool semaphore_p_timedwait(semaphore_t *semaphore, unsigned long time_in_usec /*timeout in microseconds*/) {
   bool ret = 0;
   struct timespec abstime;
