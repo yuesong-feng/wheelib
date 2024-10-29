@@ -11,6 +11,9 @@
 #ifndef DBG_H
 #define DBG_H
 
+#include <stdlib.h>
+#include "basic.h"
+
 #define WLIB_DEBUG
 
 /** Assert that LHS OP RHS, where OP is an operator.
@@ -25,7 +28,7 @@ passed to std::ostringstream::operator<<, so it must be implemented for them. */
     const auto lhs{LHS};                                                       \
     const auto rhs{RHS};                                                       \
     if (unlikely(!(lhs OP rhs))) {                                             \
-      wl_err; \
+      wl_error; \
     }                                                                          \
   } while (0)
 

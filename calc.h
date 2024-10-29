@@ -102,8 +102,57 @@ store the given number of bits.
 @return nonzero if n is zero or a power of two; zero otherwise */
 #define calc_is_2pow(n) likely(!((n) & ((n)-1)))
 
+uint64_t find_prime(uint64_t n) {
+  uint64_t pow2;
+  uint64_t i;
 
+  double random1 = 1.0412321;
+  double random2 = 1.1131347;
+  double random3 = 1.0132677;
 
+  n += 100;
+
+  pow2 = 1;
+  while (pow2 * 2 < n) {
+    pow2 = 2 * pow2;
+  }
+
+  if ((double)n < 1.05 * (double)pow2) {
+    n = (uint64_t)((double)n * random1);
+  }
+
+  pow2 = 2 * pow2;
+
+  if ((double)n > 0.95 * (double)pow2) {
+    n = (uint64_t)((double)n * random2);
+  }
+
+  if (n > pow2 - 20) {
+    n += 30;
+  }
+
+  /* Now we have n far enough from powers of 2. To make
+  n more random (especially, if it was not near
+  a power of 2), we then multiply it by a random number. */
+
+  n = (uint64_t)((double)n * random3);
+
+  for (;; n++) {
+    i = 2;
+    while (i * i <= n) {
+      if (n % i == 0) {
+        goto next_n;
+      }
+      i++;
+    }
+
+    /* Found a prime */
+    break;
+  next_n:;
+  }
+
+  return (n);
+}
 
 
 
@@ -292,59 +341,6 @@ static inline bool uint64_mul_overflow(uint64_t a, uint64_t b, uint64_t *result)
   overflow_if(a != 0 && b != res / a);
   *result = res;
   return false;
-}
-
-// from MySQL 9.1.0 InnoBase
-static inline uint64_t find_prime(uint64_t n) {
-  uint64_t pow2;
-  uint64_t i;
-
-  const double random1 = 1.0412321;
-  const double random2 = 1.1131347;
-  const double random3 = 1.0132677;
-
-  n += 100;
-
-  pow2 = 1;
-  while (pow2 * 2 < n) {
-    pow2 = 2 * pow2;
-  }
-
-  if ((double)n < 1.05 * (double)pow2) {
-    n = (uint64_t)((double)n * random1);
-  }
-
-  pow2 = 2 * pow2;
-
-  if ((double)n > 0.95 * (double)pow2) {
-    n = (uint64_t)((double)n * random2);
-  }
-
-  if (n > pow2 - 20) {
-    n += 30;
-  }
-
-  /* Now we have n far enough from powers of 2. To make
-  n more random (especially, if it was not near
-  a power of 2), we then multiply it by a random number. */
-
-  n = (uint64_t)((double)n * random3);
-
-  for (;; n++) {
-    i = 2;
-    while (i * i <= n) {
-      if (n % i == 0) {
-        goto next_n;
-      }
-      i++;
-    }
-
-    /* Found a prime */
-    break;
-  next_n:;
-  }
-
-  return n;
 }
 
 // used by event_timedwait and semaphore_p_timedwait

@@ -95,13 +95,13 @@ reads or writes to this memory. */
 
 /* Header size for a memory heap block */
 #define MEM_BLOCK_HEADER_SIZE \
-  wl_calc_align(sizeof(mem_block_t), MEM_ALIGNMENT)
+  calc_align(sizeof(mem_block_t), MEM_ALIGNMENT)
 
 /** Space needed when allocating for a user a field of length N.
 The space is allocated only in multiples of MEM_ALIGNMENT. In debug mode
 contains two areas of no mans lands before and after the buffer requested. */
 static inline uint64_t MEM_SPACE_NEEDED(uint64_t N) {
-  return wl_calc_align(N + 2 * MEM_NO_MANS_LAND, MEM_ALIGNMENT);
+  return calc_align(N + 2 * MEM_NO_MANS_LAND, MEM_ALIGNMENT);
 }
 
 #ifdef WLIB_DEBUG
