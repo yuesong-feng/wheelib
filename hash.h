@@ -63,7 +63,7 @@ typedef struct hash_table_t {
                                                                                    \
       while (struct3333->NAME != NODE) {                                           \
         struct3333 = (TYPE *)struct3333->NAME;                                     \
-        ast(struct3333);                                                           \
+        wl_a(struct3333);                                                           \
       }                                                                            \
                                                                                    \
       struct3333->LINK = NODE->LINK;                                               \
@@ -71,13 +71,13 @@ typedef struct hash_table_t {
   } while (0)
 
 static inline hash_cell_t *hash_get_nth_cell(hash_table_t *table, size_t n) {
-  astd(table);
-  astd(n < table->n_cells);
+  wl_ad(table);
+  wl_ad(n < table->n_cells);
   return &table->cells[n];
 }
 
 static inline uint64_t hash_calc_cell_id(uint64_t hash_value, hash_table_t *table) {
-  astd(table);
+  wl_ad(table);
   return hash_value % table->n_cells;
 }
 
@@ -124,7 +124,7 @@ static inline void *hash_get_first(hash_table_t *table, size_t cell_id) {
   } while (0)
 
 static inline void hash_table_clear(hash_table_t *table) {
-  astd(table);
+  wl_ad(table);
   memset(table->cells, 0x0, table->n_cells * sizeof(hash_cell_t));
 }
 
@@ -134,8 +134,8 @@ static inline hash_table_t *hash_create(size_t n) {
 
   prime = find_prime(n);
 
-  table = (hash_table_t *)mem_alloc(sizeof(hash_table_t));
-  table->cells = (hash_cell_t *)mem_alloc(sizeof(hash_cell_t) * prime);
+  table = (hash_table_t *)malloc(sizeof(hash_table_t));
+  table->cells = (hash_cell_t *)malloc(sizeof(hash_cell_t) * prime);
   table->n_cells = prime;
 
   hash_table_clear(table);
@@ -144,10 +144,10 @@ static inline hash_table_t *hash_create(size_t n) {
 }
 
 static inline void hash_table_free(hash_table_t *table) {
-  astd(table);
-  astd(table->cells);
-  mem_free(table->cells);
-  mem_free(table);
+  wl_ad(table);
+  wl_ad(table->cells);
+  free(table->cells);
+  free(table);
 }
 
 #endif

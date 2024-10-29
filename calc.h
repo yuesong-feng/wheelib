@@ -17,14 +17,106 @@
 #include <stdint.h>   // for (u)int(n)_t
 #include <sys/time.h> // for struct timeval
 #include <time.h>     // for calc_abstime
+#include "dbg.h"
+
+/** Calculates fast the remainder of n/m when m is a power of two.
+ @param n in: numerator
+ @param m in: denominator, must be a power of two
+ @return the remainder of n/m */
+#define calc_2pow_remainder(n, m) ((n) & ((m)-1))
+
+/** Calculates the biggest multiple of m that is not bigger than n
+ when m is a power of two.  In other words, rounds n down to m * k.
+ @param n in: number to round down
+ @param m in: alignment, must be a power of two
+ @return n rounded down to the biggest possible integer multiple of m */
+#define calc_2pow_round(n, m) ((n) & ~((m)-1))
+
+/** Align a number down to a multiple of a power of two.
+@param n in: number to round down
+@param m in: alignment, must be a power of two
+@return n rounded down to the biggest possible integer multiple of m */
+#define calc_align_down(n, m) wl_2pow_round(n, m)
 
 /** Calculates the smallest multiple of m that is not smaller than n
  when m is a power of two.  In other words, rounds n up to m * k.
  @param n in: number to round up
  @param m in: alignment, must be a power of two
  @return n rounded up to the smallest possible integer multiple of m */
-#define ut_calc_align(n, m) (((n) + ((m) - 1)) & ~((m) - 1))
-#define bits_in_bytes(b) (((b) + 7UL) / 8UL)
+#define calc_align(n, m) (((n) + ((m)-1)) & ~((m)-1))
+
+/** Calculates fast the 2-logarithm of a number, rounded upward to an
+ integer.
+ @return logarithm in the base 2, rounded upward */
+static inline long calc_2_log(long n) /*!< in: number != 0 */
+{
+  long res = 0;
+
+  wl_ad(n > 0);
+
+  n = n - 1;
+
+  for (;;) {
+    n = n / 2;
+
+    if (n == 0) {
+      break;
+    }
+
+    res++;
+  }
+
+  return (res + 1);
+}
+
+/** Calculates 2 to power n.
+@param[in]      n       power of 2
+@return 2 to power n */
+static inline uint32_t calc_2_exp(uint32_t n) { return (1 << n); }
+
+/** Calculates fast the number rounded up to the nearest power of 2.
+ @return first power of 2 which is >= n */
+long calc_2_power_up(long n) /*!< in: number != 0 */
+{
+  long res;
+
+  res = 1;
+
+  wl_ad(n > 0);
+
+  while (res < n) {
+    res = res * 2;
+  }
+
+  return (res);
+}
+
+/** Determine how many bytes (groups of 8 bits) are needed to
+store the given number of bits.
+@param b in: bits
+@return number of bytes (octets) needed to represent b */
+#define BITS_IN_BYTES(b) (((b) + 7UL) / 8UL)
+
+/** Determines if a number is zero or a power of two.
+@param[in]      n       number
+@return nonzero if n is zero or a power of two; zero otherwise */
+#define calc_is_2pow(n) likely(!((n) & ((n)-1)))
+
+
+
+
+
+
+
+
+
+
+/////////
+
+
+
+
+
 
 #define max(x, y) ((x) > (y) ? (x) : (y))
 #define min(x, y) ((x) < (y) ? (x) : (y))
@@ -265,7 +357,7 @@ static inline void calc_abstime(unsigned long time_in_usec /*timeout in microsec
     int ret;
 
     ret = gettimeofday(&tv, NULL);
-    ast(ret == 0);
+    wl_a(ret == 0);
 
     tv.tv_usec += time_in_usec;
 
@@ -280,7 +372,7 @@ static inline void calc_abstime(unsigned long time_in_usec /*timeout in microsec
     abstime->tv_nsec = 999999999;
     abstime->tv_sec = (time_t)(unsigned long)(-2); // ULINT_MAX
   }
-  ast(abstime->tv_nsec <= 999999999);
+  wl_a(abstime->tv_nsec <= 999999999);
 }
 
 #endif

@@ -24,32 +24,32 @@ typedef struct mutex_t {
 /** Create the mutex by calling the system functions. */
 static inline void mutex_init(mutex_t *mutex) {
   int ret = pthread_mutex_init(&mutex->mutex, NULL);
-  ast(ret == 0);
+  wl_a(ret == 0);
 }
 
 /** Destroy the mutex */
 static inline void mutex_destroy(mutex_t *mutex) {
   int ret = pthread_mutex_destroy(&mutex->mutex);
-  astd(ret == 0);
+  wl_ad(ret == 0);
 }
 
 /** Acquire the mutex. */
 static inline void mutex_lock(mutex_t *mutex) {
   int ret = pthread_mutex_lock(&mutex->mutex);
-  ast(ret == 0);
+  wl_a(ret == 0);
 }
 
 /** @return true if locking succeeded */
 static inline bool mutex_trylock(mutex_t *mutex) {
   int ret = pthread_mutex_trylock(&mutex->mutex);
-  astd(ret == 0 || ret == EBUSY);
+  wl_ad(ret == 0 || ret == EBUSY);
   return ret == 0;
 }
 
 /** Release the mutex. */
 static inline void mutex_unlock(mutex_t *mutex) {
   int ret = pthread_mutex_unlock(&mutex->mutex);
-  ast(ret == 0);
+  wl_a(ret == 0);
 }
 
 #endif

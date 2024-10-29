@@ -39,7 +39,7 @@ static inline vm_stkfrm_t *vm_stkfrm_create(vm_t *vm) {
   return vm->stkfrm;
 }
 static inline vm_t *vm_create() {
-  vm_t* vm = (vm_t*)mem_alloc(sizeof(vm_t));
+  vm_t* vm = (vm_t*)malloc(sizeof(vm_t));
   vm->heap = mem_heap_create(0);
   vm->stack_size = VM_STACK_SIZE;
   vm->bottom = (vm_ptr_t*)mem_heap_zalloc(vm->heap, vm->stack_size * VM_WORD_SIZE);
@@ -131,7 +131,7 @@ static inline void op_pack(op_lst_t *ops, byte *bytecode) {
       write2b(bytecode + 2, ((op_store_t*)op)->len);
       break;
     default:
-      ast(false);
+      wl_a(false);
     }
   }
 }

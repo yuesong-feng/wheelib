@@ -33,20 +33,3 @@ wlib doesn't include <stdio.h> now
 | atomic     | atomic utilities |
 | io         | input-output utilities |
 | vm         | stack based cpu virtual machine |
-
-wlib dependency graph:
-
-    rwlock/thread
-        basic
-    event/sem
-        calc
-        cond
-            mutex
-                basic
-    hash/stack
-        mem
-            lst
-            byte
-                basic
-            calc
-                basic

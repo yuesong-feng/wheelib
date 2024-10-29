@@ -24,7 +24,7 @@ static inline thread_t thread_create(thread_func_t func, void *arg, thread_id_t 
   thread_t pthread;
 
   ret = pthread_create(&pthread, NULL, func, arg);
-  ast(ret == 0);
+  wl_a(ret == 0);
 
   if (thread_id)
     *thread_id = pthread;
@@ -35,7 +35,7 @@ static inline thread_t thread_create(thread_func_t func, void *arg, thread_id_t 
 static inline void thread_join(thread_t thread) {
   int ret = pthread_join(thread, NULL);
   /* Waiting on already-quit threads is allowed. */
-  ut_ad(ret == 0 || ret == ESRCH);
+  wl_ad(ret == 0 || ret == ESRCH);
 }
 
 static inline void thread_exit(void *exit_value, bool detach /*If true, the thread will be detached right before exiting. If false, another thread is responsible for joining this thread.*/) {

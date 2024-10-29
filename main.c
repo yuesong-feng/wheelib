@@ -27,13 +27,13 @@ void *func2(void *arg) {
 }
 
 int main() {
-  char *buf = mem_alloc(100);
+  char *buf = malloc(100);
 
   memcpy(buf, "abc123", 5);
   memset(buf, 'a', 100);
   printf("%s\n", buf);
 
-  mem_free(buf);
+  free(buf);
 
   hash_table_t *tab = hash_create(10);
   value_t v1 = {123};
@@ -85,7 +85,7 @@ int main() {
 
   mem_heap_t *heap = mem_heap_create(0);
   lst_t lst;
-  LIST_DATA_ADD_LAST(heap, lst, 123);
+  LIST_DATA_ADD_Lwl_a(heap, lst, 123);
 
   return 0;
 }

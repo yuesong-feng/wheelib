@@ -21,38 +21,38 @@ typedef struct cond_t {
 /** Initialize a condition variable */
 static inline void cond_init(cond_t *cond) {
   int ret = pthread_cond_init(&cond->cond, NULL);
-  ast(ret == 0);
+  wl_a(ret == 0);
 }
 
 /** Destroys a condition variable */
 static inline void cond_destroy(cond_t *cond) {
   int ret = pthread_cond_destroy(&cond->cond);
-  astd(ret == 0);
+  wl_ad(ret == 0);
 }
 
 /** Wakes one thread waiting for condition variable */
 static inline void cond_signal(cond_t *cond) {
   int ret = pthread_cond_signal(&cond->cond);
-  ast(ret == 0);
+  wl_a(ret == 0);
 }
 
 /** Wakes all threads waiting for condition variable */
-static inline void cond_broadcast(cond_t *cond) {
-  int ret = pthread_cond_broadcast(&cond->cond);
-  ast(ret == 0);
+static inline void cond_broadcwl_a(cond_t *cond) {
+  int ret = pthread_cond_broadcwl_a(&cond->cond);
+  wl_a(ret == 0);
 }
 
 /** Wait on condition variable */
 static inline void cond_wait(cond_t *cond, mutex_t *mutex) {
   int ret = pthread_cond_wait(&cond->cond, &mutex->mutex);
-  ast(ret == 0);
+  wl_a(ret == 0);
 }
 
 /** Do a timed wait on condition variable.
   @return true if timed out, false otherwise */
 static inline bool cond_timedwait(cond_t *cond, mutex_t *mutex, const struct timespec *abstime) {
   int ret = pthread_cond_timedwait(&cond->cond, &mutex->mutex, abstime);
-  astd(ret == 0 || ret == ETIMEDOUT);
+  wl_ad(ret == 0 || ret == ETIMEDOUT);
   return ret == ETIMEDOUT;
 }
 

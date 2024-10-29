@@ -36,7 +36,7 @@ static inline void write2b(void *dest, uint16_t v) {
   write1b(dest, (uint8_t)(v & 0xFF));
   write1b((byte *)dest + 1, (uint8_t)((v >> 8) & 0xFF));
 #else
-  ast(false);
+  wl_a(false);
 #endif
 }
 
@@ -47,7 +47,7 @@ static inline void write4b(void *dest, uint32_t v) {
   write2b(dest, (uint16_t)(v & 0xFFFF));
   write2b((byte *)dest + 2, (uint16_t)((v >> 16) & 0xFFFF));
 #else
-  ast(false);
+  wl_a(false);
 #endif
 }
 
@@ -58,7 +58,7 @@ static inline void write8b(void *dest, uint64_t v) {
   write4b(dest, (uint32_t)(v & 0xFFFFFFFF));
   write4b((byte *)dest + 4, (uint32_t)((v >> 32) & 0xFFFFFFFF));
 #else
-  ast(false);
+  wl_a(false);
 #endif
 }
 
@@ -75,7 +75,7 @@ static inline uint16_t read2b(void *src) {
   b = read1b((byte *)src + 1);
   return (b << 8) + a;
 #else
-  ast(false);
+  wl_a(false);
 #endif
 }
 
@@ -88,7 +88,7 @@ static inline uint32_t read4b(void *src) {
   b = read2b((byte *)src + 2);
   return (b << 16) + a;
 #else
-  ast(false);
+  wl_a(false);
 #endif
 }
 
@@ -103,7 +103,7 @@ static inline uint64_t read8b(void *src) {
   res += a;
   return res;
 #else
-  ast(false);
+  wl_a(false);
 #endif
 }
 

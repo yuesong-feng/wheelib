@@ -20,7 +20,7 @@ typedef struct stack_t {
 } stack_t;
 
 static inline stack_t *stack_create() {
-  stack_t *stack = (stack_t *)mem_alloc(sizeof(stack_t));
+  stack_t *stack = (stack_t *)malloc(sizeof(stack_t));
   stack->heap = mem_heap_create(0);
   return stack;
 }

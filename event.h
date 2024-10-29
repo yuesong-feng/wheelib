@@ -41,7 +41,7 @@ static inline void event_set(event_t *event) {
   mutex_lock(&event->mutex);
   if (!event->is_set) {
     event->is_set = true;
-    cond_broadcast(&event->cond);
+    cond_broadcwl_a(&event->cond);
   }
   mutex_unlock(&event->mutex);
 }
@@ -51,7 +51,7 @@ static inline bool event_tryset(event_t *event) {
   if (mutex_trylock(&event->mutex)) {
     if (!event->is_set) {
       event->is_set = true;
-      cond_broadcast(&event->cond);
+      cond_broadcwl_a(&event->cond);
     }
     mutex_unlock(&event->mutex);
     return true;
