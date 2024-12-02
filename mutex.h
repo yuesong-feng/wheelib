@@ -9,6 +9,8 @@
   Version 1.0 2024/09/05
 
   Version 1.1 2024/10/24 change to MySQL 9.1.0
+
+  Version 1.2 2024/12/02 stable release
 */
 #ifndef MUTEX_H
 #define MUTEX_H
@@ -24,7 +26,7 @@ typedef struct mutex_t {
 /** Create the mutex by calling the system functions. */
 static inline void mutex_init(mutex_t *mutex) {
   int ret = pthread_mutex_init(&mutex->mutex, NULL);
-  wl_a(ret == 0);
+  wl_ad(ret == 0);
 }
 
 /** Destroy the mutex */
@@ -36,7 +38,7 @@ static inline void mutex_destroy(mutex_t *mutex) {
 /** Acquire the mutex. */
 static inline void mutex_lock(mutex_t *mutex) {
   int ret = pthread_mutex_lock(&mutex->mutex);
-  wl_a(ret == 0);
+  wl_ad(ret == 0);
 }
 
 /** @return true if locking succeeded */
@@ -49,7 +51,7 @@ static inline bool mutex_trylock(mutex_t *mutex) {
 /** Release the mutex. */
 static inline void mutex_unlock(mutex_t *mutex) {
   int ret = pthread_mutex_unlock(&mutex->mutex);
-  wl_a(ret == 0);
+  wl_ad(ret == 0);
 }
 
 #endif

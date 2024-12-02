@@ -344,7 +344,7 @@ static inline bool uint64_mul_overflow(uint64_t a, uint64_t b, uint64_t *result)
 }
 
 // used by event_timedwait and semaphore_p_timedwait
-// convert microseconds to abstime
+// convert microseconds to abstime, from MySQL 5.6.51
 #define INFINITE_TIME ((unsigned long)(-1)) // ULINT_UNDEFINED
 static inline void calc_abstime(unsigned long time_in_usec /*timeout in microseconds, or INFINITE_TIME*/, struct timespec *abstime) {
   const unsigned long MICROSECS_IN_A_SECOND = 1000000;
@@ -353,7 +353,7 @@ static inline void calc_abstime(unsigned long time_in_usec /*timeout in microsec
     int ret;
 
     ret = gettimeofday(&tv, NULL);
-    wl_a(ret == 0);
+    wl_ad(ret == 0);
 
     tv.tv_usec += time_in_usec;
 
@@ -368,7 +368,7 @@ static inline void calc_abstime(unsigned long time_in_usec /*timeout in microsec
     abstime->tv_nsec = 999999999;
     abstime->tv_sec = (time_t)(unsigned long)(-2); // ULINT_MAX
   }
-  wl_a(abstime->tv_nsec <= 999999999);
+  wl_ad(abstime->tv_nsec <= 999999999);
 }
 
 #endif

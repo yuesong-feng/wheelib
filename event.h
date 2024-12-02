@@ -13,6 +13,8 @@
   Version 1.2 2024/09/18 add calc_abstime
 
   Version 1.3 2024/10/24 change to MySQL 9.1.0
+
+  Version 1.4 2024/12/02 stable release
 */
 #ifndef EVENT_H
 #define EVENT_H
@@ -41,7 +43,7 @@ static inline void event_set(event_t *event) {
   mutex_lock(&event->mutex);
   if (!event->is_set) {
     event->is_set = true;
-    cond_broadcwl_a(&event->cond);
+    cond_broadcast(&event->cond);
   }
   mutex_unlock(&event->mutex);
 }
@@ -51,7 +53,7 @@ static inline bool event_tryset(event_t *event) {
   if (mutex_trylock(&event->mutex)) {
     if (!event->is_set) {
       event->is_set = true;
-      cond_broadcwl_a(&event->cond);
+      cond_broadcast(&event->cond);
     }
     mutex_unlock(&event->mutex);
     return true;
