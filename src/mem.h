@@ -15,7 +15,9 @@ struct mem_block {
 typedef mem_block_t mem_heap_t;
 
 mem_heap_t* mem_heap_create(size_t size);
+
 void mem_heap_free(mem_heap_t *heap);
+
 void* mem_heap_alloc(mem_heap_t *heap, size_t size);
 
 #endif

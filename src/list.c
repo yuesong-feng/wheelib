@@ -1,14 +1,12 @@
 #include "list.h"
 #include <stdlib.h>
 
-list_t *list_create(mem_heap_t *heap) {
+list_t *list_create(alloc_t *alloc) {
   list_t *list;
 
-  if (heap)
-    list = mem_heap_alloc(heap, sizeof(list_t));
-  else
-    list = malloc(sizeof(list_t));
+  list = alloc->malloc(alloc, sizeof(list_t));
 
+  list->alloc = alloc;
   list->first = NULL;
   list->last = NULL;
 
@@ -16,8 +14,7 @@ list_t *list_create(mem_heap_t *heap) {
 }
 
 void list_free(list_t *list) {
-  if (list->heap == NULL)
-    free(list);
+  list->alloc->free(list->alloc, list);
 }
 
 list_node_t *list_get_first(list_t *list) {
@@ -43,10 +40,7 @@ list_node_t *list_add_last(list_t *list, void *data) {
 list_node_t *list_add_after(list_t *list, list_node_t *prev, void *data) {
   list_node_t *node;
 
-  if (list->heap)
-    node = mem_heap_alloc(list->heap, sizeof(list_node_t));
-  else
-    node = malloc(sizeof(list_node_t));
+  node = list->alloc->malloc(list->alloc, sizeof(list_node_t));
 
   node->data = data;
 

@@ -1,6 +1,6 @@
 #ifndef LIST_H
 #define LIST_H
-#include "mem.h"
+#include "alloc.h"
 #include <stdbool.h>
 
 typedef struct list_node_t list_node_t;
@@ -12,12 +12,12 @@ struct list_node_t {
 
 typedef struct list_t list_t;
 struct list_t {
+  alloc_t *alloc;
   list_node_t *first;
   list_node_t *last;
-  mem_heap_t *heap;
 };
 
-list_t *list_create();
+list_t *list_create(alloc_t *alloc);
 
 void list_free(list_t *list);
 
@@ -33,7 +33,6 @@ list_node_t *list_add_last(list_t *list, void *data);
 
 list_node_t *list_add_after(list_t *list, list_node_t *prev, void *data);
 
-void list_remove(list_t* list, list_node_t *node);
-
+void list_remove(list_t *list, list_node_t *node);
 
 #endif
