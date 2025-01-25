@@ -19,6 +19,6 @@ void mem_destroy(mem_t *mem);
 
 void *mem_alloc(mem_t *mem, size_t size);
 
-void *mem_free(mem_t *mem, void *ptr);
+void mem_free(mem_t *mem, void *ptr);
 
 #endif

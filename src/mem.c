@@ -1,7 +1,7 @@
 #include "mem.h"
 #include "heap.h"
-#include <stdlib.h>
 #include <assert.h>
+#include <stdlib.h>
 
 mem_t *mem_create(int type) {
   mem_t *mem;
@@ -15,6 +15,7 @@ mem_t *mem_create(int type) {
     mem->obj = heap;
   }
   mem->type = type;
+  return mem;
 }
 
 void mem_destroy(mem_t *mem) {
@@ -29,9 +30,10 @@ void *mem_alloc(mem_t *mem, size_t size) {
     return malloc(size);
   else if (mem->type == mem_type_heap)
     return mem_heap_alloc(mem->obj, size);
+  return NULL;
 }
 
-void *mem_free(mem_t *mem, void *ptr) {
+void mem_free(mem_t *mem, void *ptr) {
   if (mem->type == mem_type_os)
     free(ptr);
 }

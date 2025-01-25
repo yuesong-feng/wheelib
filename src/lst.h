@@ -1,3 +1,8 @@
+/**
+ * @file lst.h
+ * @date 2025-01-25
+ * @author yuesong-feng
+ */
 #ifndef LST_H
 #define LST_H
 #include <stddef.h>
@@ -16,14 +21,20 @@
   }
 
 #define LIST_INIT(LIST)  \
-  {                      \
+  do {                   \
     (LIST).count = 0;    \
     (LIST).first = NULL; \
     (LIST).last = NULL;  \
-  }
+  } while (0)
+
+#define LIST_NODE_INIT(LINK, NODE) \
+  do {                             \
+    ((NODE)->LINK).prev = NULL;    \
+    ((NODE)->LINK).next = NULL;    \
+  } while (0)
 
 #define LIST_ADD_FIRST(LINK, LIST, NODE)    \
-  {                                         \
+  do {                                      \
     ((NODE)->LINK).prev = NULL;             \
     ((NODE)->LINK).next = (LIST).first;     \
                                             \
@@ -36,10 +47,10 @@
       (LIST).last = (NODE);                 \
                                             \
     ++((LIST).count);                       \
-  }
+  } while (0)
 
 #define LIST_ADD_LAST(LINK, LIST, NODE)    \
-  {                                        \
+  do {                                     \
     ((NODE)->LINK).next = NULL;            \
     ((NODE)->LINK).prev = (LIST).last;     \
                                            \
@@ -52,10 +63,10 @@
       (LIST).first = (NODE);               \
                                            \
     ++((LIST).count);                      \
-  }
+  } while (0)
 
 #define LIST_INSERT_AFTER(LINK, LIST, NODE1, NODE2)  \
-  {                                                  \
+  do {                                               \
     ((NODE2)->LINK).prev = (NODE1);                  \
     ((NODE2)->LINK).next = ((NODE1)->LINK).next;     \
                                                      \
@@ -67,10 +78,10 @@
     ((NODE1)->LINK).next = (NODE2);                  \
                                                      \
     ++(LIST).count;                                  \
-  }
+  } while (0)
 
 #define LIST_REMOVE(LINK, LIST, NODE)                           \
-  {                                                             \
+  do {                                                          \
     if (((NODE)->LINK).next != NULL)                            \
       ((((NODE)->LINK).next)->LINK).prev = ((NODE)->LINK).prev; \
     else                                                        \
@@ -81,8 +92,10 @@
     else                                                        \
       (LIST).first = ((NODE)->LINK).next;                       \
                                                                 \
+    LIST_NODE_INIT(LINK, NODE);                                 \
+                                                                \
     --(LIST).count;                                             \
-  }
+  } while (0)
 
 #define LIST_GET_NEXT(LINK, NODE) (((NODE)->LINK).next)
 
