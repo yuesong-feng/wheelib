@@ -1,27 +1,28 @@
 #include "vec.h"
 #include "byte.h"
+#include "mem.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
-vector_t *vector_create(alloc_t *alloc, size_t sizeof_value, size_t size) {
+vector_t *vector_create(mem_t *mem, size_t sizeof_value, size_t size) {
   vector_t *vec;
 
-  vec = alloc->malloc(alloc, sizeof(vector_t));
+  vec = mem_alloc(mem, sizeof(vector_t));
 
-  vec->alloc = alloc;
+  vec->mem = mem;
+  vec->sizeof_value = sizeof_value;
   vec->used = 0;
   vec->total = size;
-  vec->sizeof_value = sizeof_value;
 
-  vec->data = alloc->malloc(alloc, vec->sizeof_value * size);
+  vec->data = mem_alloc(mem, vec->sizeof_value * size);
 
   return vec;
 }
 
 void vector_free(vector_t *vec) {
-  vec->alloc->free(vec->alloc, vec->data);
-  vec->alloc->free(vec->alloc, vec);
+  mem_free(vec->mem, vec->data);
+  mem_free(vec->mem, vec);
 }
 
 #define VEC_OFFSET(vec, nth) (vec->sizeof_value * nth)

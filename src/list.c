@@ -1,20 +1,20 @@
 #include "list.h"
 #include <stdlib.h>
 
-list_t *list_create(alloc_t *alloc) {
+list_t *list_create(mem_t *mem) {
   list_t *list;
 
-  list = alloc->malloc(alloc, sizeof(list_t));
+  list = mem_malloc(mem, sizeof(list_t));
 
-  list->alloc = alloc;
+  list->mem = mem;
   list->first = NULL;
   list->last = NULL;
 
   return list;
 }
 
-void list_free(list_t *list) {
-  list->alloc->free(list->alloc, list);
+void list_destroy(list_t *list) {
+  mem_free(list->mem, list);
 }
 
 list_node_t *list_get_first(list_t *list) {
@@ -40,7 +40,7 @@ list_node_t *list_add_last(list_t *list, void *data) {
 list_node_t *list_add_after(list_t *list, list_node_t *prev, void *data) {
   list_node_t *node;
 
-  node = list->alloc->malloc(list->alloc, sizeof(list_node_t));
+  node = mem_alloc(list->mem, sizeof(list_node_t));
 
   node->data = data;
 

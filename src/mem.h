@@ -1,23 +1,24 @@
 #ifndef MEM_H
 #define MEM_H
-#include "lst.h"
+#include <stddef.h>
 
-typedef struct mem_block mem_block_t;
-struct mem_block {
-    LIST(mem_block_t) base;
-    LIST_NODE(mem_block_t) list;
-    size_t len;
-    size_t total_size;
-    size_t free;
-    size_t start;
+enum mem_type {
+  mem_type_os,
+  mem_type_heap
 };
 
-typedef mem_block_t mem_heap_t;
+typedef struct mem_t mem_t;
+struct mem_t {
+  int type;
+  void *obj;
+};
 
-mem_heap_t* mem_heap_create(size_t size);
+mem_t *mem_create(int type);
 
-void mem_heap_free(mem_heap_t *heap);
+void mem_destroy(mem_t *mem);
 
-void* mem_heap_alloc(mem_heap_t *heap, size_t size);
+void *mem_alloc(mem_t *mem, size_t size);
+
+void *mem_free(mem_t *mem, void *ptr);
 
 #endif

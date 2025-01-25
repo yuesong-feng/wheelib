@@ -1,17 +1,20 @@
 #include "mem.h"
-#include <string.h>
-#include <stdio.h>
 
-int main(int argc, char const *argv[])
-{
-    mem_heap_t *heap = mem_heap_create(1024);
+int main(int argc, char const *argv[]) {
+  mem_t *mem = mem_create(mem_type_os);
 
-    char *str = mem_heap_alloc(heap, 64);
-    memset(str, 'a', 64);
+  char *str = mem_alloc(mem, 64);
+  memset(str, 'a', 64);
+  printf("%s\n", str);
+  mem_free(mem, str);
+  mem_destroy(mem);
 
-    printf("%s\n", str);
+  mem = mem_create(mem_type_heap);
+  str = mem_alloc(mem, 64);
+  memset(str, 'a', 64);
+  printf("%s\n", str);
+  mem_free(mem, str);
+  mem_destroy(mem);
 
-    mem_heap_free(heap);
-
-    return 0;
+  return 0;
 }

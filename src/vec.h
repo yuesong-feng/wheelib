@@ -1,19 +1,19 @@
 #ifndef VEC_H
 #define VEC_H
-#include "alloc.h"
+#include "mem.h"
 #include <stdbool.h>
 #include <stddef.h>
 
 typedef struct vector_t vector_t;
 struct vector_t {
-  alloc_t *alloc;
+  mem_t *mem;
   void *data;
   size_t used;
   size_t total;
   size_t sizeof_value;
 };
 
-vector_t *vector_create(alloc_t *alloc, size_t sizeof_value, size_t size);
+vector_t *vector_create(mem_t *mem, size_t sizeof_value, size_t size);
 
 void vector_free(vector_t *vec);
 
