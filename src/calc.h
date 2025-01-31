@@ -1,6 +1,8 @@
 #ifndef CALC_H
 #define CALC_H
 #include "byte.h"
+#include <limits.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -45,5 +47,37 @@ size_t calc_fold_string(const char *str);
 size_t calc_fold_binary(const byte *str, size_t len);
 
 uint64_t uint64_create(size_t high, size_t low);
+
+bool calc_add_s8_overflow(int8_t a, int8_t b, int8_t *result);
+bool calc_sub_s8_overflow(int8_t a, int8_t b, int8_t *result);
+bool calc_mul_s8_overflow(int8_t a, int8_t b, int8_t *result);
+
+bool calc_add_s16_overflow(int16_t a, int16_t b, int16_t *result);
+bool calc_sub_s16_overflow(int16_t a, int16_t b, int16_t *result);
+bool calc_mul_s16_overflow(int16_t a, int16_t b, int16_t *result);
+
+bool calc_add_s32_overflow(int32_t a, int32_t b, int32_t *result);
+bool calc_sub_s32_overflow(int32_t a, int32_t b, int32_t *result);
+bool calc_mul_s32_overflow(int32_t a, int32_t b, int32_t *result);
+
+bool calc_add_s64_overflow(int64_t a, int64_t b, int64_t *result);
+bool calc_sub_s64_overflow(int64_t a, int64_t b, int64_t *result);
+bool calc_mul_s64_overflow(int64_t a, int64_t b, int64_t *result);
+
+bool calc_add_u8_overflow(uint8_t a, uint8_t b, uint8_t *result);
+bool calc_sub_u8_overflow(uint8_t a, uint8_t b, uint8_t *result);
+bool calc_mul_u8_overflow(uint8_t a, uint8_t b, uint8_t *result);
+
+bool calc_add_u16_overflow(uint16_t a, uint16_t b, uint16_t *result);
+bool calc_sub_u16_overflow(uint16_t a, uint16_t b, uint16_t *result);
+bool calc_mul_u16_overflow(uint16_t a, uint16_t b, uint16_t *result);
+
+bool calc_add_u32_overflow(uint32_t a, uint32_t b, uint32_t *result);
+bool calc_sub_u32_overflow(uint32_t a, uint32_t b, uint32_t *result);
+bool calc_mul_u32_overflow(uint32_t a, uint32_t b, uint32_t *result);
+
+bool calc_add_u64_overflow(uint64_t a, uint64_t b, uint64_t *result);
+bool calc_sub_u64_overflow(uint64_t a, uint64_t b, uint64_t *result);
+bool calc_mul_u64_overflow(uint64_t a, uint64_t b, uint64_t *result);
 
 #endif

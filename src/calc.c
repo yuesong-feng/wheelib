@@ -142,3 +142,251 @@ uint64_t uint64_create(size_t high, size_t low) {
   assert(low <= UINT32_MASK);
   return (((uint64_t)high) << 32 | low);
 }
+
+bool calc_add_s8_overflow(int8_t a, int8_t b, int8_t *result) {
+  int16_t res = (int16_t)a + (int16_t)b;
+
+  if (res > CHAR_MAX || res < CHAR_MIN)
+    return true;
+
+  *result = (int8_t)res;
+  return false;
+}
+
+bool calc_sub_s8_overflow(int8_t a, int8_t b, int8_t *result) {
+  int16_t res = (int16_t)a - (int16_t)b;
+
+  if (res > CHAR_MAX || res < CHAR_MIN)
+    return true;
+
+  *result = (int8_t)res;
+  return false;
+}
+
+bool calc_mul_s8_overflow(int8_t a, int8_t b, int8_t *result) {
+  int16_t res = (int16_t)a * (int16_t)b;
+
+  if (res > CHAR_MAX || res < CHAR_MIN)
+    return true;
+
+  *result = (int8_t)res;
+  return false;
+}
+
+bool calc_add_s16_overflow(int16_t a, int16_t b, int16_t *result) {
+  int32_t res = (int32_t)a + (int32_t)b;
+
+  if (res > SHRT_MAX || res < SHRT_MIN)
+    return true;
+
+  *result = (int16_t)res;
+  return false;
+}
+
+bool calc_sub_s16_overflow(int16_t a, int16_t b, int16_t *result) {
+  int32_t res = (int32_t)a - (int32_t)b;
+
+  if (res > SHRT_MAX || res < SHRT_MIN)
+    return true;
+
+  *result = (int16_t)res;
+  return false;
+}
+
+bool calc_mul_s16_overflow(int16_t a, int16_t b, int16_t *result) {
+  int32_t res = (int32_t)a * (int32_t)b;
+
+  if (res > SHRT_MAX || res < SHRT_MIN)
+    return true;
+
+  *result = (int16_t)res;
+  return false;
+}
+
+bool calc_add_s32_overflow(int32_t a, int32_t b, int32_t *result) {
+  int64_t res = (int64_t)a + (int64_t)b;
+
+  if (res > INT_MAX || res < INT_MIN)
+    return true;
+
+  *result = (int32_t)res;
+  return false;
+}
+
+bool calc_sub_s32_overflow(int32_t a, int32_t b, int32_t *result) {
+  int64_t res = (int64_t)a - (int64_t)b;
+
+  if (res > INT_MAX || res < INT_MIN)
+    return true;
+
+  *result = (int32_t)res;
+  return false;
+}
+
+bool calc_mul_s32_overflow(int32_t a, int32_t b, int32_t *result) {
+  int64_t res = (int64_t)a * (int64_t)b;
+
+  if (res > INT_MAX || res < INT_MIN)
+    return true;
+
+  *result = (int32_t)res;
+  return false;
+}
+
+bool calc_add_s64_overflow(int64_t a, int64_t b, int64_t *result) {
+  if ((a > 0 && b > 0 && a > LLONG_MAX - b) ||
+      (a < 0 && b < 0 && a < LLONG_MIN - b))
+    return true;
+
+  *result = a + b;
+  return false;
+}
+
+bool calc_sub_s64_overflow(int64_t a, int64_t b, int64_t *result) {
+  /*
+   * Note: overflow is also possible when a == 0 and b < 0 (specifically,
+   * when b == LLONG_MIN).
+   */
+  if ((a < 0 && b > 0 && a < LLONG_MIN + b) ||
+      (a >= 0 && b < 0 && a > LLONG_MAX + b))
+    return true;
+
+  *result = a - b;
+  return false;
+}
+
+bool calc_mul_s64_overflow(int64_t a, int64_t b, int64_t *result) {
+  /*
+   * Overflow can only happen if at least one value is outside the range
+   * sqrt(min)..sqrt(max) so check that first as the division can be quite a
+   * bit more expensive than the multiplication.
+   *
+   * Multiplying by 0 or 1 can't overflow of course and checking for 0
+   * separately avoids any risk of dividing by 0.  Be careful about dividing
+   * INT_MIN by -1 also, note reversing the a and b to ensure we're always
+   * dividing it by a positive value.
+   *
+   */
+  if ((a > INT_MAX || a < INT_MIN ||
+       b > INT_MAX || b < INT_MIN) &&
+      a != 0 && a != 1 && b != 0 && b != 1 &&
+      ((a > 0 && b > 0 && a > LLONG_MAX / b) ||
+       (a > 0 && b < 0 && b < LLONG_MIN / a) ||
+       (a < 0 && b > 0 && a < LLONG_MIN / b) ||
+       (a < 0 && b < 0 && a < LLONG_MAX / b)))
+    return true;
+
+  *result = a * b;
+  return false;
+}
+
+bool calc_add_u8_overflow(uint8_t a, uint8_t b, uint8_t *result) {
+  uint8_t res = a + b;
+
+  if (res < a)
+    return true;
+
+  *result = res;
+  return false;
+}
+
+bool calc_sub_u8_overflow(uint8_t a, uint8_t b, uint8_t *result) {
+  if (b > a)
+    return true;
+
+  *result = a - b;
+  return false;
+}
+
+bool calc_mul_u8_overflow(uint8_t a, uint8_t b, uint8_t *result) {
+  uint16_t res = (uint16_t)a * (uint16_t)b;
+  if (res > UCHAR_MAX)
+    return true;
+
+  *result = (uint8_t)res;
+  return false;
+}
+
+bool calc_add_u16_overflow(uint16_t a, uint16_t b, uint16_t *result) {
+  uint16_t res = a + b;
+
+  if (res < a)
+    return true;
+
+  *result = res;
+  return false;
+}
+
+bool calc_sub_u16_overflow(uint16_t a, uint16_t b, uint16_t *result) {
+  if (b > a)
+    return true;
+
+  *result = a - b;
+  return false;
+}
+
+bool calc_mul_u16_overflow(uint16_t a, uint16_t b, uint16_t *result) {
+  uint32_t res = (uint32_t)a * (uint32_t)b;
+
+  if (res > USHRT_MAX)
+    return true;
+
+  *result = (uint16_t)res;
+  return false;
+}
+
+bool calc_add_u32_overflow(uint32_t a, uint32_t b, uint32_t *result) {
+  uint32_t res = a + b;
+
+  if (res < a)
+    return true;
+
+  *result = res;
+  return false;
+}
+
+bool calc_sub_u32_overflow(uint32_t a, uint32_t b, uint32_t *result) {
+  if (b > a)
+    return true;
+
+  *result = a - b;
+  return false;
+}
+
+bool calc_mul_u32_overflow(uint32_t a, uint32_t b, uint32_t *result) {
+  uint64_t res = (uint64_t)a * (uint64_t)b;
+
+  if (res > UINT_MAX)
+    return true;
+
+  *result = (uint32_t)res;
+  return false;
+}
+
+bool calc_add_u64_overflow(uint64_t a, uint64_t b, uint64_t *result) {
+  uint64_t res = a + b;
+
+  if (res < a)
+    return true;
+
+  *result = res;
+  return false;
+}
+
+bool calc_sub_u64_overflow(uint64_t a, uint64_t b, uint64_t *result) {
+  if (b > a)
+    return true;
+
+  *result = a - b;
+  return false;
+}
+
+bool calc_mul_u64_overflow(uint64_t a, uint64_t b, uint64_t *result) {
+  uint64_t res = a * b;
+
+  if (a != 0 && b != res / a)
+    return true;
+
+  *result = res;
+  return false;
+}
