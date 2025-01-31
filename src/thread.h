@@ -10,11 +10,7 @@
 
 typedef pthread_t thread_t;
 
-typedef void *(*thread_func_t)(void *);
-
-typedef void *thread_arg_t;
-
-thread_t thread_create(thread_func_t func, thread_arg_t arg);
+thread_t thread_create(void *(*func)(void *), void *arg);
 
 void thread_join(thread_t thread);
 

@@ -1,19 +1,22 @@
+/**
+ * @file vec.h
+ * @date 2025-01-29
+ * @author yuesong-feng
+ */
 #ifndef VEC_H
 #define VEC_H
-#include "mem.h"
 #include <stdbool.h>
 #include <stddef.h>
 
 typedef struct vector_t vector_t;
 struct vector_t {
-  mem_t *mem;
   void *data;
   size_t used;
   size_t total;
   size_t sizeof_value;
 };
 
-vector_t *vector_create(mem_t *mem, size_t sizeof_value, size_t size);
+vector_t *vector_create(size_t sizeof_value, size_t size);
 
 void vector_free(vector_t *vec);
 
@@ -29,16 +32,16 @@ void vector_resize(vector_t *vec);
 
 bool vector_is_empty(const vector_t *vec);
 
-void *vector_get(vector_t *vec, size_t nth);
+void *vector_get(const vector_t *vec, size_t n);
 
 void *vector_get_last(vector_t *vec);
 
-void vector_set(vector_t *vec, size_t nth, void *elem);
+void vector_set(vector_t *vec, size_t n, void *elem);
 
-void vector_reset(vector_t *vec);
+void vecor_reset(vector_t *vec);
 
-typedef int (*compare_t)(const void *, const void *);
+void *vector_last(vector_t *vec);
 
-void vector_sort(vector_t *vec, compare_t compare);
+void vector_sort(vector_t *vec, int (*cmp)(const void *, const void *));
 
 #endif

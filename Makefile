@@ -1,9 +1,9 @@
-all: heap_test list_test vec_test
+all: heap_test vec_test hash_test
 
 wheelib:
 	gcc -g -shared -fPIC -o libwheelib.so $(wildcard src/*.c)
 
-.PHONY: heap_test list_test vec_test all
+.PHONY:  all
 
 heap_test: wheelib
 	gcc test/heap_test.c -Isrc -L./ -lwheelib -o heap_test
@@ -25,3 +25,6 @@ thread_test: wheelib
 
 sema_test: wheelib
 	gcc -g test/sema_test.c -Isrc -L./ -lwheelib -o sema_test
+
+hash_test: wheelib
+	gcc -g test/hash_test.c -Isrc -L./ -lwheelib -o hash_test

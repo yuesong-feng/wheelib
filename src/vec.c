@@ -1,31 +1,37 @@
+/**
+ * @file vec.c
+ * @date 2025-01-29
+ * @author yuesong-feng
+ */
 #include "vec.h"
 #include "byte.h"
-#include "mem.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
-vector_t *vector_create(mem_t *mem, size_t sizeof_value, size_t size) {
+#define VEC_OFFSET(vec, i) (vec->sizeof_value * i)
+
+vector_t *vector_create(size_t sizeof_value, size_t size) {
   vector_t *vec;
 
-  vec = mem_alloc(mem, sizeof(vector_t));
+  assert(size > 0);
 
-  vec->mem = mem;
-  vec->sizeof_value = sizeof_value;
+  vec = malloc(sizeof(*vec));
+  assert(vec != NULL);
+
   vec->used = 0;
   vec->total = size;
-
-  vec->data = mem_alloc(mem, vec->sizeof_value * size);
+  vec->sizeof_value = sizeof_value;
+  vec->data = malloc(vec->sizeof_value * size);
+  assert(vec->data);
 
   return vec;
 }
 
 void vector_free(vector_t *vec) {
-  mem_free(vec->mem, vec->data);
-  mem_free(vec->mem, vec);
+  free(vec->data);
+  free(vec);
 }
-
-#define VEC_OFFSET(vec, nth) (vec->sizeof_value * nth)
 
 void *vector_push(vector_t *vec, const void *elem) {
   void *last;
@@ -36,8 +42,11 @@ void *vector_push(vector_t *vec, const void *elem) {
 
   last = (byte *)vec->data + VEC_OFFSET(vec, vec->used);
 
-  if (elem)
+  memset(last, 0, vec->sizeof_value);
+
+  if (elem) {
     memcpy(last, elem, vec->sizeof_value);
+  }
 
   ++vec->used;
 
@@ -46,27 +55,25 @@ void *vector_push(vector_t *vec, const void *elem) {
 
 void *vector_pop(vector_t *vec) {
   void *elem;
-
   assert(vec->used > 0);
-
-  elem = vector_get_last(vec);
+  elem = vector_last(vec);
   --vec->used;
-
   return elem;
 }
 
 void *vector_remove(vector_t *vec, const void *elem) {
-  size_t i;
   void *current = NULL;
   void *next;
+  size_t i;
   size_t old_used_count = vec->used;
 
   for (i = 0; i < vec->used; ++i) {
     current = vector_get(vec, i);
 
     if (*(void **)current == elem) {
-      if (i == vec->used - 1)
+      if (i == vec->used - i) {
         return vector_pop(vec);
+      }
 
       next = vector_get(vec, i + 1);
       memmove(current, next, vec->sizeof_value * (vec->used - i - 1));
@@ -87,7 +94,8 @@ void vector_resize(vector_t *vec) {
   size_t old_size = vec->used * vec->sizeof_value;
   size_t new_size = new_total * vec->sizeof_value;
 
-  vec->data = vec->alloc->realloc(vec->alloc, vec->data, old_size, new_size);
+  vec->data = realloc(vec->data, new_size);
+  assert(vec->data);
 
   vec->total = new_total;
 }
@@ -96,31 +104,32 @@ bool vector_is_empty(const vector_t *vec) {
   return vector_size(vec) == 0;
 }
 
-void *vector_get(vector_t *vec, size_t nth) {
-  assert(nth < vec->used);
-  return (byte *)vec->data + VEC_OFFSET(vec, nth);
+void *vector_get(const vector_t *vec, size_t n) {
+  assert(n < vec->used);
+  return (byte *)vec->data + VEC_OFFSET(vec, n);
 }
 
 void *vector_get_last(vector_t *vec) {
   assert(vec->used > 0);
-  return vector_get(vec, vector_size(vec) - 1);
+  return (byte *)vector_get(vec, vec->used - 1);
 }
 
-void vector_set(vector_t *vec, size_t nth, void *elem) {
+void vector_set(vector_t *vec, size_t n, void *elem) {
   void *slot;
-
-  assert(nth < vec->used);
-
-  slot = (byte *)vec->data + VEC_OFFSET(vec, nth);
+  assert(n < vec->used);
+  slot = (byte *)vec->data + VEC_OFFSET(vec, n);
   memcpy(slot, elem, vec->sizeof_value);
 }
 
-void vector_reset(vector_t *vec) {
+void vecor_reset(vector_t *vec) {
   vec->used = 0;
 }
 
-typedef int (*compare_t)(const void *, const void *);
+void *vector_last(vector_t *vec) {
+  assert(vector_size(vec) > 0);
+  return vector_get(vec, vector_size(vec) - 1);
+}
 
-void vector_sort(vector_t *vec, compare_t compare) {
-  qsort(vec->data, vec->used, vec->sizeof_value, compare);
+void vector_sort(vector_t *vec, int (*cmpare)(const void *, const void *)) {
+  qsort(vec->data, vec->used, vec->sizeof_value, cmpare);
 }

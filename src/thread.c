@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <sys/select.h>
 
-thread_t thread_create(thread_func_t func, thread_arg_t arg) {
+thread_t thread_create(void *(*func)(void *), void *arg) {
   pthread_t pthread;
   int ret = pthread_create(&pthread, NULL, func, arg);
   assert(ret == 0);
