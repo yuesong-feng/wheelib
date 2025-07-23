@@ -38,7 +38,7 @@ void *vector_get_last(vector_t *vec);
 
 void vector_set(vector_t *vec, size_t n, void *elem);
 
-void vecor_reset(vector_t *vec);
+void vector_reset(vector_t *vec);
 
 void *vector_last(vector_t *vec);
 

@@ -74,6 +74,7 @@ void list_remove(list_t *list, list_node_t *node) {
   }
 
   node->prev = node->next = NULL;
+  free(node);
 }
 
 list_node_t *list_get_first(list_t *list) {

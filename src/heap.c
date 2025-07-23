@@ -100,7 +100,7 @@ static mem_block_t *mem_heap_add_block(mem_heap_t *heap, size_t n) {
 
   LIST_INSERT_AFTER(list, heap->base, block, new_block);
 
-  return block;
+  return new_block;
 }
 
 void *mem_heap_alloc(mem_heap_t *heap, size_t n) {

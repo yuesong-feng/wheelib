@@ -3,8 +3,8 @@
  * @date 2025-01-31
  * @author yuesong-feng
  */
-#ifndef MACH_H
-#define MACH_H
+#ifndef BYTE_H
+#define BYTE_H
 #include <stddef.h>
 #include <stdint.h>
 
