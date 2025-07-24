@@ -3,6 +3,8 @@
  * @date 2025-01-29
  * @author yuesong-feng
  */
+
+ /*
 #include "vec_old.h"
 #include "byte.h"
 #include <assert.h>
@@ -85,7 +87,7 @@ void *vector_remove(vector_t *vec, const void *elem) {
   return old_used_count != vec->used ? current : NULL;
 }
 
-size_t vector_sizexx(const vector_t *vec) {
+size_t vector_size(const vector_t *vec) {
   return vec->used;
 }
 
@@ -133,3 +135,4 @@ void *vector_last(vector_t *vec) {
 void vector_sort(vector_t *vec, int (*cmpare)(const void *, const void *)) {
   qsort(vec->data, vec->used, vec->sizeof_value, cmpare);
 }
+*/

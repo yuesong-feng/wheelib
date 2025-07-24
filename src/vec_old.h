@@ -3,6 +3,8 @@
  * @date 2025-01-29
  * @author yuesong-feng
  */
+
+ /*
 #ifndef VEC_H
 #define VEC_H
 #include <stdbool.h>
@@ -26,7 +28,7 @@ void *vector_pop(vector_t *vec);
 
 void *vector_remove(vector_t *vec, const void *elem);
 
-size_t vector_sizexx(const vector_t *vec);
+size_t vector_size(const vector_t *vec);
 
 void vector_resize(vector_t *vec);
 
@@ -45,3 +47,4 @@ void *vector_last(vector_t *vec);
 void vector_sort(vector_t *vec, int (*cmp)(const void *, const void *));
 
 #endif
+*/
