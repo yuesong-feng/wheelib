@@ -6,7 +6,7 @@
 #include "thread.h"
 #include "sec.h"
 #include <assert.h>
-#include <sys/select.h>
+//#include <sys/select.h>
 
 thread_t thread_create(void *(*func)(void *), void *arg) {
   pthread_t pthread;
@@ -42,9 +42,9 @@ void thread_yield() {
   assert(ret == 0);
 }
 
-void thread_sleep(usec_t us) {
-  struct timeval tv;
-  timeval_from_usec(&tv, us);
-  int ret = select(0, NULL, NULL, NULL, &tv);
-  assert(ret == 0);
-}
+//void thread_sleep(usec_t us) {
+//  struct timeval tv;
+//  timeval_from_usec(&tv, us);
+//  int ret = select(0, NULL, NULL, NULL, &tv);
+//  assert(ret == 0);
+//}
