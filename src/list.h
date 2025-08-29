@@ -2,6 +2,7 @@
 #define LIST_H
 #include <stdbool.h>
 #include <stddef.h>
+#include "type.h"
 
 typedef struct list_node_t list_node_t;
 struct list_node_t {
@@ -67,7 +68,6 @@ void list_resize1(list_t *list, size_t count, void *value);
 
 void list_swap(list_t *list, list_t *other);
 
-typedef bool (*Compare)(const void *, const void *);
 void list_merge(list_t *list, list_t *other);
 
 void list_merge1(list_t *list, list_t *other, Compare comp);
@@ -80,12 +80,10 @@ void list_splice2(list_t *list, list_node_t *pos, list_t *other, list_node_t *fi
 
 size_t list_remove(list_t *list, void *value);
 
-typedef bool (*UnaryPred)(const void *);
 size_t list_remove_if(list_t *list, UnaryPred p);
 
 void list_reverse(list_t *list);
 
-typedef bool (*BinaryPred)(const void *, const void *);
 size_t list_unique(list_t *list);
 
 size_t list_unique1(list_t *list, BinaryPred p);
